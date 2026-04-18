@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="../PALADIN/DATABASE/Paladin_Icon.png" width="120" height="120" alt="Paladin" style="margin-top: 10px;" />
+<img src="PALADIN/DATABASE/Paladin_Icon.png" width="120" height="120" alt="Paladin">
 
 **Paladin**
 
