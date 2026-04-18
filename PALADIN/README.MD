@@ -2,9 +2,9 @@
 
 <div align="center">
 
-# <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/shield-halved.svg" width="28" height="28" alt="Paladin" /> Paladin
+<img src="../PALADIN/DATABASE/Paladin_Icon.png" width="120" height="120" alt="Paladin" style="margin-top: 10px;" />
 
-**Trading Intelligence Application**
+**Paladin**
 
 *Desktop market analytics and signal generation for institutional-style workflows*
 
