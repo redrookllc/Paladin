@@ -18,7 +18,7 @@
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/bullseye.svg" width="20" height="20" alt="" /> Purpose
+## Purpose
 
 > [!NOTE]
 > This document inventories the deliverable source tree for **operators, integrators, and internal engineering**. README.md can be found inside of PALADIN folder.
@@ -27,9 +27,9 @@
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/diagram-project.svg" width="20" height="20" alt="" /> Repository layout
+## Repository layout
 
-### <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/folder-tree.svg" width="18" height="18" alt="" /> Application source (project root)
+### Application Source (project root)
 
 | | File | Role |
 |--:|------|------|
@@ -42,7 +42,7 @@
 | <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/file-code.svg" width="16" height="16" alt="" /> | `data4.json` | Brain metadata for setup/training. |
 | <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/list-ul.svg" width="16" height="16" alt="" /> | `requirements.txt` | Python dependencies. |
 
-### <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/database.svg" width="18" height="18" alt="" /> `DATABASE/`
+### `DATABASE/`
 
 | | File | Role |
 |--:|------|------|
@@ -55,7 +55,7 @@
 
 Additional preview assets may ship in this folder.
 
-### <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/box-archive.svg" width="18" height="18" alt="" /> `MODELS/`
+### `MODELS/`
 
 | | File | Role |
 |--:|------|------|
@@ -63,17 +63,17 @@ Additional preview assets may ship in this folder.
 | <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/floppy-disk.svg" width="16" height="16" alt="" /> | `paladin_brain.pkl` | Fallback brain if default is missing. |
 | <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/floppy-disk.svg" width="16" height="16" alt="" /> | `scaler.pkl` | Fitted `RobustScaler`. |
 
-### <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/code.svg" width="18" height="18" alt="" /> `.vscode/`
+### `.vscode/`
 
 Optional editor settings (e.g. `settings.json`); no runtime effect.
 
-### <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/brands/python.svg" width="18" height="18" alt="" /> `paladin/` (optional)
+### `paladin/` (optional)
 
 Project-local Python virtual environment (`Lib/site-packages`, etc.). Not application source; prefer isolated envs in production.
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/list-check.svg" width="20" height="20" alt="" /> Prerequisites
+## Prerequisites
 
 - <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/brands/python.svg" width="16" height="16" alt="" /> **Python 3.11** (see `requirements.txt` comments).
 - <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/memory.svg" width="16" height="16" alt="" /> **RAM:** 16 GB recommended for interactive ML workloads.
@@ -87,7 +87,7 @@ Some installs need a system **TA-Lib** library before the Python wheel; see upst
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/terminal.svg" width="20" height="20" alt="" /> Operation
+## Operation
 
 | | Step | Command |
 |--:|------|---------|
@@ -98,7 +98,7 @@ Some installs need a system **TA-Lib** library before the Python wheel; see upst
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/sliders.svg" width="20" height="20" alt="" /> Configuration
+## Configuration
 
 | | Variable | Meaning |
 |--:|----------|---------|
@@ -108,14 +108,14 @@ Baseline market data uses **yfinance**; no API key is required for standard Yaho
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/triangle-exclamation.svg" width="20" height="20" alt="" /> Regulatory notice
+## Regulatory Notice
 
 > [!WARNING]
 > **Paladin** outputs analytics only. It is **not** investment advice, a solicitation, or a recommendation to buy or sell any security. Past performance does not guarantee future results. Operators must ensure compliance with applicable law and internal policy. **Red Rook, LLC** disclaims liability for trading losses.
 
 ---
 
-## <img src="https://cdn.jsdelivr.net/gh/FortAwesome/Font-Awesome@6.5.1/svgs/solid/scale-balanced.svg" width="20" height="20" alt="" /> License
+## License
 
 © 2025 **Red Rook, LLC.** All rights reserved.
 
