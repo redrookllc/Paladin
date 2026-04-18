@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PALADIN | Red Rook, LLC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #000000;
+            --color-accent: #941107;
+            --color-accent-muted: #6b0d05;
+            --color-text-primary: #f5f5f5;
+            --color-text-secondary: #b8b8b8;
+            --color-text-muted: #7a7a7a;
+            --color-border: #2a2a2a;
+            --color-border-light: #1a1a1a;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-body: 'Crimson Text', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .page-bg {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at top left, rgba(148, 17, 7, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(148, 17, 7, 0.02) 0%, transparent 50%),
+                #0a0a0a;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(15, 15, 15, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 0 0 1px rgba(148, 17, 7, 0.1), 0 8px 32px rgba(0, 0, 0, 0.6);
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            border-color: rgba(148, 17, 7, 0.3);
+        }
+
+        .stat-card {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            border-color: rgba(148, 17, 7, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(148, 17, 7, 0.15);
+        }
+
+        .stock-card {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid var(--color-border);
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .stock-card:hover {
+            border-color: rgba(148, 17, 7, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .stock-card.selected {
+            border-color: var(--color-accent);
+            background: rgba(148, 17, 7, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 0.875rem 1.75rem;
+            cursor: pointer;
+            font-family: var(--font-serif);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-muted);
+            box-shadow: 0 4px 16px rgba(148, 17, 7, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            font-weight: 600;
+            transition: all 0.2s ease;
+            padding: 0.875rem 1.75rem;
+            cursor: pointer;
+            font-family: var(--font-body);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--color-accent);
+        }
+
+        .tier-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(148, 17, 7, 0.4);
+            background: rgba(148, 17, 7, 0.1);
+            font-family: var(--font-serif);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tier-badge:hover {
+            background: rgba(148, 17, 7, 0.2);
+            border-color: rgba(148, 17, 7, 0.6);
+        }
+
+        .signal-pill {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: var(--font-serif);
+        }
+
+        .signal-buy {
+            background: rgba(38, 166, 154, 0.15);
+            color: #26a69a;
+            border: 1.5px solid #26a69a;
+        }
+
+        .signal-sell {
+            background: rgba(239, 83, 80, 0.15);
+            color: #ef5350;
+            border: 1.5px solid #ef5350;
+        }
+
+        .signal-hold {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1.5px solid #ffc107;
+        }
+
+        .loading-spinner {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid var(--color-accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(148, 17, 7, 0.4);
+            background: rgba(148, 17, 7, 0.05);
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid var(--color-border);
+        }
+
+        .tier-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .tier-modal.show {
+            display: flex;
+        }
+
+        .tier-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .tier-content {
+            position: relative;
+            max-width: 48rem;
+            width: 100%;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 0 0 1px rgba(148, 17, 7, 0.2), 0 16px 48px rgba(0, 0, 0, 0.8);
+            padding: 2rem;
+        }
+
+        .tier-option {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid var(--color-border);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tier-option:hover {
+            border-color: var(--color-accent);
+            background: rgba(148, 17, 7, 0.05);
+        }
+
+        .tier-option.active {
+            border-color: var(--color-accent);
+            background: rgba(148, 17, 7, 0.1);
+        }
+
+        .pattern-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.7rem;
+            margin: 0.25rem;
+            border-radius: 4px;
+            font-family: var(--font-serif);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pattern-bullish {
+            background: rgba(38, 166, 154, 0.15);
+            color: #26a69a;
+            border: 1px solid #26a69a;
+        }
+
+        .pattern-bearish {
+            background: rgba(239, 83, 80, 0.15);
+            color: #ef5350;
+            border: 1px solid #ef5350;
+        }
+
+        .pattern-neutral {
+            background: rgba(255, 193, 7, 0.15);
+            color: #ffc107;
+            border: 1px solid #ffc107;
+        }
+
+        .annotation-tooltip {
+            position: fixed;
+            background: linear-gradient(145deg, #141414 0%, #0d0d0d 100%);
+            border: 1px solid #333;
+            border-left: 4px solid var(--color-accent);
+            padding: 0;
+            border-radius: 4px;
+            max-width: 380px;
+            z-index: 1000;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            font-family: var(--font-body);
+        }
+
+        .annotation-tooltip.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .tooltip-header {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tooltip-title {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: 1rem;
+            color: #fff;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tooltip-close {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s;
+            line-height: 1;
+        }
+
+        .tooltip-close:hover {
+            color: #fff;
+        }
+
+        .tooltip-body {
+            padding: 1.25rem;
+        }
+
+        .tooltip-desc {
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .tooltip-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .tooltip-row {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .tooltip-icon {
+            width: 20px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            font-size: 0.9rem;
+            margin-top: 2px;
+        }
+
+        .tooltip-content {
+            flex: 1;
+        }
+
+        .tooltip-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 0.25rem;
+            display: block;
+        }
+
+        .tooltip-text {
+            font-size: 0.85rem;
+            color: #ddd;
+            line-height: 1.4;
+            white-space: pre-line;
+        }
+
+        .skill-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 2px 6px;
+            font-size: 0.65rem;
+            border-radius: 2px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 0.5rem;
+        }
+
+        .skill-beginner {
+            background: rgba(34, 197, 94, 0.15);
+            color: #4ade80;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .skill-intermediate {
+            background: rgba(255, 193, 7, 0.15);
+            color: #facc15;
+            border: 1px solid rgba(255, 193, 7, 0.3);
+        }
+
+        .skill-advanced {
+            background: rgba(239, 83, 80, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 83, 80, 0.3);
+        }
+
+        .d3-tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #444;
+            color: #fff;
+            padding: 8px;
+            font-size: 12px;
+            border-radius: 4px;
+            pointer-events: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-bg"></div>
+
+    <div class="relative z-10 min-h-screen p-4 md:p-8">
+        <header class="mb-10">
+            <div class="flex items-center justify-between flex-wrap gap-4">
+                <div>
+                    <h1 class="text-4xl md:text-5xl font-bold tracking-wide" style="color: var(--color-accent);">
+                        <span style="font-size: 0.9em;">PALADIN</span>
+                    </h1>
+                    <p class="text-sm mt-2" style="color: var(--color-text-muted); font-style: italic;">
+                        Algorithmic Trading Intelligence by <span style="color: var(--color-text-secondary);">Red Rook, LLC.</span>
+                    </p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="dashboard-card flex items-center gap-4 px-6 py-3">
+                        <div>
+                            <div class="text-sm font-semibold" style="color: var(--color-text-primary); font-family: var(--font-serif);" id="username-display">
+                                Market Analysis Dashboard
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <div class="pulse-dot"></div>
+                                <div class="text-xs" style="color: var(--color-text-muted);" id="last-update">Updating...</div>
+                            </div>
+                        </div>
+                    </div>
+                    <button onclick="openTierModal()" class="tier-badge">
+                        <i class="fas fa-chess-pawn"></i>
+                        <span id="current-tier">Pawn</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-card mb-8">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                </div>
+                Market Overview
+            </h2>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="market-indices">
+                <div class="stat-card"><div class="loading-spinner mx-auto"></div></div>
+                <div class="stat-card"><div class="loading-spinner mx-auto"></div></div>
+                <div class="stat-card"><div class="loading-spinner mx-auto"></div></div>
+                <div class="stat-card"><div class="loading-spinner mx-auto"></div></div>
+            </div>
+        </div>
+
+        <div class="dashboard-card mb-8">
+            <h2 class="text-2xl font-semibold mb-6 flex items-center gap-3">
+                <div class="feature-icon">
+                    <i class="fas fa-layer-group" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                </div>
+                Select Securities
+            </h2>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4" id="stock-selector">
+            </div>
+        </div>
+
+        <div class="dashboard-card mb-8">
+            <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                <h2 class="text-2xl font-semibold flex items-center gap-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-candlestick" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                    </div>
+                    <span id="current-symbol">Select a Security</span>
+                </h2>
+                <div class="flex gap-3">
+                    <select id="timeframe" class="btn-secondary">
+                        <option value="1D">1 Day</option>
+                        <option value="5D">5 Days</option>
+                        <option value="1M" selected>1 Month</option>
+                        <option value="3M">3 Months</option>
+                        <option value="6M">6 Months</option>
+                        <option value="1Y">1 Year</option>
+                    </select>
+                    <button id="refresh-btn" class="btn-primary flex items-center gap-2">
+                        <i class="fas fa-rotate-right"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+
+            <div id="loading-state" class="text-center py-16">
+                <div class="loading-spinner mx-auto mb-6"></div>
+                <p class="text-lg" style="color: var(--color-text-muted); font-style: italic;">Select a security to commence analysis</p>
+            </div>
+
+            <div id="chart-wrapper" class="hidden">
+                <div id="chart-canvas-container" class="chart-container"></div>
+            </div>
+
+            <div id="stats-grid" class="hidden grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="stat-card">
+                    <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">Current Price</div>
+                    <div class="text-3xl font-bold" style="color: var(--color-text-primary);" id="stat-price">-</div>
+                    <div class="text-sm font-semibold mt-1" id="stat-change">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">Open</div>
+                    <div class="text-2xl font-bold" style="color: var(--color-text-primary);" id="stat-open">-</div>
+                    <div class="text-xs mt-1" style="color: var(--color-text-muted); font-style: italic;">Today's Opening</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">High / Low</div>
+                    <div class="text-xl font-bold" style="color: var(--color-text-primary);" id="stat-high-low">-</div>
+                    <div class="text-xs mt-1" style="color: var(--color-text-muted); font-style: italic;">Today's Range</div>
+                </div>
+                <div class="stat-card">
+                    <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">Volume</div>
+                    <div class="text-2xl font-bold" style="color: var(--color-text-primary);" id="stat-volume">-</div>
+                    <div class="text-xs mt-1" style="color: var(--color-text-muted); font-style: italic;">Trading Volume</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+            <div class="dashboard-card">
+                <h3 class="text-xl font-semibold mb-5 flex items-center gap-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-brain" style="color: #60a5fa;"></i>
+                    </div>
+                    Technical Analysis
+                </h3>
+                <div id="technical-analysis">
+                    <p class="text-center py-8" style="color: var(--color-text-muted); font-style: italic;">Select a security to view technical analysis</p>
+                </div>
+            </div>
+
+            <div class="dashboard-card">
+                <h3 class="text-xl font-semibold mb-5 flex items-center gap-3">
+                    <div class="feature-icon">
+                        <i class="fas fa-lightbulb" style="color: #a78bfa;"></i>
+                    </div>
+                    Pattern Detection
+                </h3>
+                <div id="pattern-container">
+                    <p class="text-center py-8" style="color: var(--color-text-muted); font-style: italic;">Select a security to detect patterns</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tier-modal" id="tierModal">
+        <div class="tier-backdrop" onclick="closeTierModal()"></div>
+        <div class="tier-content">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-2xl font-semibold" style="font-family: var(--font-serif); color: var(--color-text-primary);">Select Your Tier</h3>
+                <button onclick="closeTierModal()" style="color: var(--color-text-muted); font-size: 1.5rem; background: none; border: none; cursor: pointer;">×</button>
+            </div>
+
+            <div class="tier-option" onclick="selectTier('Pawn')">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-chess-pawn" style="font-size: 2rem; color: var(--color-accent);"></i>
+                        <span class="text-xl font-semibold" style="font-family: var(--font-serif);">Pawn</span>
+                    </div>
+                    <span class="text-2xl font-semibold" style="font-family: var(--font-serif);">$49<span class="text-sm" style="color: var(--color-text-muted);">/mo</span></span>
+                </div>
+                <p style="color: var(--color-text-secondary); font-size: 0.95rem; font-style: italic;">Fundamental analysis for emerging traders</p>
+            </div>
+
+            <div class="tier-option" onclick="selectTier('Rook')">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-chess-rook" style="font-size: 2rem; color: var(--color-accent);"></i>
+                        <span class="text-xl font-semibold" style="font-family: var(--font-serif);">Rook</span>
+                    </div>
+                    <span class="text-2xl font-semibold" style="font-family: var(--font-serif);">$149<span class="text-sm" style="color: var(--color-text-muted);">/mo</span></span>
+                </div>
+                <p style="color: var(--color-text-secondary); font-size: 0.95rem; font-style: italic;">Advanced intelligence for dedicated practitioners</p>
+            </div>
+
+            <div class="tier-option" onclick="selectTier('Knight')">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-chess-knight" style="font-size: 2rem; color: var(--color-accent);"></i>
+                        <span class="text-xl font-semibold" style="font-family: var(--font-serif);">Knight</span>
+                    </div>
+                    <span class="text-2xl font-semibold" style="font-family: var(--font-serif);">Custom</span>
+                </div>
+                <p style="color: var(--color-text-secondary); font-size: 0.95rem; font-style: italic;">Bespoke enterprise solutions</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="annotation-tooltip" id="annotationTooltip">
+        <div class="tooltip-header">
+            <div class="tooltip-title">
+                <span id="tooltip-title-text">Signal</span>
+                <span id="tooltip-skill-badge" class="skill-badge skill-beginner">BEG</span>
+            </div>
+            <button class="tooltip-close" onclick="closeTooltip()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="tooltip-body">
+            <p class="tooltip-desc" id="tooltip-desc">Description text goes here.</p>
+
+            <div class="tooltip-grid">
+                <div class="tooltip-row">
+                    <div class="tooltip-icon"><i class="fas fa-clock" style="color: #aaa;"></i></div>
+                    <div class="tooltip-content">
+                        <span class="tooltip-label">When to Use</span>
+                        <div class="tooltip-text" id="tooltip-when">Strategy guidance.</div>
+                    </div>
+                </div>
+
+                <div class="tooltip-row">
+                    <div class="tooltip-icon"><i class="fas fa-crosshairs" style="color: #aaa;"></i></div>
+                    <div class="tooltip-content">
+                        <span class="tooltip-label">How to Trade</span>
+                        <div class="tooltip-text" id="tooltip-how">Execution steps.</div>
+                    </div>
+                </div>
+
+                <div class="tooltip-row">
+                    <div class="tooltip-icon"><i class="fas fa-lightbulb" style="color: #facc15;"></i></div>
+                    <div class="tooltip-content">
+                        <span class="tooltip-label" style="color: #facc15;">Pro Tip</span>
+                        <div class="tooltip-text" id="tooltip-pro">Expert insight.</div>
+                    </div>
+                </div>
+
+                <div class="tooltip-row">
+                    <div class="tooltip-icon"><i class="fas fa-exclamation-triangle" style="color: #ef5350;"></i></div>
+                    <div class="tooltip-content">
+                        <span class="tooltip-label" style="color: #ef5350;">Risk Warning</span>
+                        <div class="tooltip-text" id="tooltip-risk">Risk advice.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStock = null;
+        let currentTier = 'Pawn';
+        let currentCandles = null;
+        let currentSymbol = null;
+        let chartInstance = null;
+
+        const tradingAnnotations = {
+            support: {
+                title: 'Support Level',
+                skill: 'beginner',
+                description: 'A price level where buying interest is strong enough to prevent the price from declining further. It acts as a floor for the price.',
+                whenToUse: 'Look for bounce opportunities when price approaches support. Best used in uptrends or ranging markets.',
+                howToTrade: 'Enter long positions near support\nPlace stop loss slightly below support\nWatch for increased volume at support level',
+                proTip: 'Support becomes stronger each time it holds. After 3+ touches, it becomes a major psychological level.',
+                risk: 'If support breaks decisively with volume, it often becomes new resistance. Exit longs quickly on break.'
+            },
+            resistance: {
+                title: 'Resistance Level',
+                skill: 'beginner',
+                description: 'A price level where selling pressure is strong enough to prevent the price from rising further. It acts as a ceiling for the price.',
+                whenToUse: 'Consider taking profits or shorting when price approaches resistance. Best used in downtrends or ranging markets.',
+                howToTrade: 'Take profits on longs near resistance\nEnter shorts at resistance with confirmation\nWait for breakout with volume to buy',
+                proTip: 'Resistance that breaks becomes new support (Polarity). This is called a "breakout and retest" pattern.',
+                risk: 'False breakouts are common. Wait for confirmation with volume and candle closes above resistance.'
+            },
+            goldenCross: {
+                title: 'Golden Cross',
+                skill: 'intermediate',
+                description: 'When the 50-day moving average crosses ABOVE the 200-day moving average. It is a strong bullish signal indicating a potential long-term uptrend.',
+                whenToUse: 'Major buy signal indicating potential long-term uptrend. Use as a trend filter, not an entry trigger.',
+                howToTrade: 'Enter long positions after confirmation\nSet stop loss below recent swing low\nHold for extended gains (weeks/months)',
+                proTip: 'The Golden Cross is more powerful on higher timeframes (daily, weekly). Often marks the beginning of bull markets.',
+                risk: 'Can be a lagging indicator. The move may already be underway when it triggers. Wait for pullback to enter.'
+            },
+            deathCross: {
+                title: 'Death Cross',
+                skill: 'intermediate',
+                description: 'When the 50-day moving average crosses BELOW the 200-day moving average. It is a strong bearish signal indicating a potential long-term downtrend.',
+                whenToUse: 'Major sell signal indicating potential long-term downtrend. Use as a trend filter to avoid long positions.',
+                howToTrade: 'Exit long positions or enter shorts\nAvoid buying until trend reverses\nConsider defensive positions (cash/bonds)',
+                proTip: 'Often marks the beginning of bear markets. Can last months. Protect capital aggressively.',
+                risk: 'In strong bull markets, death crosses can be false signals. Confirm with other indicators like volume or RSI.'
+            },
+            breakout: {
+                title: 'Breakout Zone',
+                skill: 'intermediate',
+                description: 'When price breaks through a significant resistance level with strong volume. It indicates the start of a new trend.',
+                whenToUse: 'Enter positions when price breaks above resistance with 2x+ normal volume.',
+                howToTrade: 'Wait for candle to close above resistance\nEnter on pullback to old resistance (now support)\nVolume must confirm breakout',
+                proTip: 'The best breakouts occur after consolidation periods. Look for "coiling" price action (lower highs/higher lows) before breakout.',
+                risk: 'False breakouts trap traders. Always confirm with volume and wait for retest of breakout level.'
+            },
+            breakdown: {
+                title: 'Breakdown Zone',
+                skill: 'intermediate',
+                description: 'When price breaks through a significant support level with strong volume. It indicates the start of a new downtrend.',
+                whenToUse: 'Exit long positions or enter shorts when support breaks.',
+                howToTrade: 'Exit longs immediately on breakdown\nEnter shorts on retest of broken support\nSet stop loss above breakdown level',
+                proTip: 'Breakdowns often lead to panic selling. The first bounce back to broken support is often a good short entry.',
+                risk: 'Support can sometimes hold after initial break. Watch for "bear trap" reversals (quick snap back above support).'
+            },
+            oversold: {
+                title: 'Oversold Condition (RSI < 30)',
+                skill: 'beginner',
+                description: 'When RSI drops below 30, indicating the asset may be oversold and due for a bounce or reversal.',
+                whenToUse: 'Look for reversal signals when RSI is oversold, especially at support levels. Do not blindly buy.',
+                howToTrade: 'Wait for RSI to cross back above 30\nConfirm with bullish candle pattern (Hammer/Engulfing)\nEnter with tight stop loss',
+                proTip: 'In strong downtrends, RSI can stay oversold for extended periods. Combine with support levels for best entries.',
+                risk: 'Oversold does not mean "buy immediately." Wait for reversal confirmation. Falling knives hurt.'
+            },
+            overbought: {
+                title: 'Overbought Condition (RSI > 70)',
+                skill: 'beginner',
+                description: 'When RSI rises above 70, indicating the asset may be overbought and due for a pullback or reversal.',
+                whenToUse: 'Consider taking profits or tightening stop losses when RSI is overbought.',
+                howToTrade: 'Take partial profits on longs\nTrail stop losses tighter\nWait for RSI to drop below 70 for shorts',
+                proTip: 'In strong uptrends, RSI can stay overbought (>70) for weeks. Don not fight the trend just because it is overbought.',
+                risk: 'Overbought does not mean "sell immediately." Momentum can continue. Look for bearish divergence (price up, RSI down).'
+            },
+            divergence: {
+                title: 'RSI Divergence',
+                skill: 'advanced',
+                description: 'When price makes a new high/low but RSI does not. This indicates weakening momentum and potential trend reversal.',
+                whenToUse: 'Major reversal signal. Watch for trend changes when divergence appears.',
+                howToTrade: 'Bullish divergence (lower low + higher RSI low) = BUY\nBearish divergence (higher high + lower RSI high) = SELL\nWait for confirmation candle',
+                proTip: 'Divergence is one of the most reliable reversal signals. It works on all timeframes but is strongest on daily/weekly.',
+                risk: 'Divergence can persist through multiple highs/lows. Don not enter too early. Wait for price confirmation.'
+            },
+            macdBullish: {
+                title: 'MACD Bullish Crossover',
+                skill: 'intermediate',
+                description: 'When the MACD line crosses above the signal line. It indicates strengthening upward momentum.',
+                whenToUse: 'Enter long positions or add to existing longs when MACD crosses bullish.',
+                howToTrade: 'Enter when MACD crosses above signal line\nStrongest when crossing above zero line\nConfirm with price action',
+                proTip: 'MACD crossovers above the zero line are more powerful than those below. Look for histogram expanding.',
+                risk: 'MACD can whipsaw in ranging markets. Best used in trending conditions.'
+            },
+            macdBearish: {
+                title: 'MACD Bearish Crossover',
+                skill: 'intermediate',
+                description: 'When the MACD line crosses below the signal line. It indicates strengthening downward momentum.',
+                whenToUse: 'Exit long positions or enter shorts when MACD crosses bearish.',
+                howToTrade: 'Exit longs when MACD crosses below signal\nEnter shorts when crossing below zero line\nConfirm with price action',
+                proTip: 'MACD crossovers below the zero line are stronger bearish signals. Watch for histogram expanding downward.',
+                risk: 'In strong uptrends, bearish MACD crossovers can be temporary. Confirm with trend analysis.'
+            },
+            volumeSpike: {
+                title: 'Volume Spike',
+                skill: 'beginner',
+                description: 'When trading volume is 2x+ higher than average. It indicates strong conviction behind the move.',
+                whenToUse: 'High volume confirms breakouts, breakdowns, and trend changes.',
+                howToTrade: 'Trust moves with high volume\nSuspect moves with low volume\nVolume precedes price movement',
+                proTip: 'Volume is the truth serum of markets. Price can lie, volume does not. Always confirm breakouts with volume.',
+                risk: 'High volume can occur on both bull and bear moves. Check the direction of the price action.'
+            },
+            trendlineBreak: {
+                title: 'Trendline Break',
+                skill: 'intermediate',
+                description: 'When price breaks through an established trendline. It signals potential trend reversal or acceleration.',
+                whenToUse: 'Major trend change signal. Prepare to reverse positions when trendline breaks.',
+                howToTrade: 'Wait for close beyond trendline\nEnter on retest of trendline\nSet stop beyond trendline',
+                proTip: 'The longer the trendline (more touches), the more significant the break. 3+ touch trendlines are major.',
+                risk: 'False breaks are common. Wait for multiple candle closes beyond the trendline for confirmation.'
+            },
+            consolidation: {
+                title: 'Consolidation Zone',
+                skill: 'beginner',
+                description: 'When price trades sideways in a tight range. It often precedes big moves.',
+                whenToUse: 'Prepare for breakout. Tighten stops. Do not trade inside the range.',
+                howToTrade: 'Draw the range boundaries\nWait for breakout with volume\nMeasure the range height for price target',
+                proTip: 'The longer the consolidation, the bigger the eventual breakout. "Coiling" builds energy for explosive moves.',
+                risk: 'Consolidations can persist for long periods. Do not try to "predict" the breakout direction. React instead.'
+            },
+            gapUp: {
+                title: 'Gap Up',
+                skill: 'intermediate',
+                description: 'When price opens significantly higher than previous close. It indicates strong buying pressure.',
+                whenToUse: 'Gaps often get filled. Watch for pullbacks or continuation.',
+                howToTrade: 'Breakaway gaps (start of trend) = do not fade\nExhaustion gaps (end of trend) = fade\nWait for volume confirmation',
+                proTip: '90% of gaps get filled eventually. Breakaway gaps (with volume) at support/resistance are exceptions.',
+                risk: 'Do not chase gaps. Wait for pullback or consolidation before entering.'
+            },
+            gapDown: {
+                title: 'Gap Down',
+                skill: 'intermediate',
+                description: 'When price opens significantly lower than previous close. It indicates strong selling pressure.',
+                whenToUse: 'Assess if gap will fill or continue lower.',
+                howToTrade: 'Exit longs pre-market if possible\nWait for stabilization before buying\nGaps at support often reverse',
+                proTip: 'Gap downs on bad news often recover partially ("dead cat bounce"). Use bounces to exit bad positions.',
+                risk: 'Catching falling knives is dangerous. Let the stock stabilize before bottom fishing.'
+            },
+            hammer: {
+                title: 'Hammer Candle',
+                skill: 'beginner',
+                description: 'Bullish reversal candle with long lower wick and small body. It shows rejection of lower prices.',
+                whenToUse: 'Strong buy signal when appearing at support levels.',
+                howToTrade: 'Enter when hammer appears at support\nStop loss below hammer low\nTarget previous resistance',
+                proTip: 'Hammers are most powerful at key support levels after downtrends. Confirm with volume and next candle.',
+                risk: 'Hammers in middle of ranges are unreliable. Need to be at support to be valid reversal signals.'
+            },
+            shootingStar: {
+                title: 'Shooting Star Candle',
+                skill: 'beginner',
+                description: 'Bearish reversal candle with long upper wick and small body. It shows rejection of higher prices.',
+                whenToUse: 'Strong sell signal when appearing at resistance levels.',
+                howToTrade: 'Exit longs or enter shorts\nStop loss above star high\nTarget previous support',
+                proTip: 'Shooting stars at resistance after uptrends are powerful reversal signals. The longer the wick, the stronger.',
+                risk: 'Need confirmation. Wait for next candle to confirm the reversal before acting.'
+            },
+            doji: {
+                title: 'Doji Candle',
+                skill: 'beginner',
+                description: 'Candle where open and close are nearly equal. It indicates indecision and potential reversal.',
+                whenToUse: 'Watch for trend reversals when doji appears after strong moves.',
+                howToTrade: 'Do not trade doji alone\nWait for next candle for direction\nDoji at support/resistance = reversal',
+                proTip: 'Doji at market tops/bottoms after strong trends are often reversal signals. Called "gravestone" or "dragonfly" doji.',
+                risk: 'Doji in ranging markets mean nothing. Only significant at trend extremes or key levels.'
+            },
+            movingAverageCross: {
+                title: 'Moving Average Crossover',
+                skill: 'beginner',
+                description: 'When faster MA crosses slower MA. It indicates momentum shift.',
+                whenToUse: 'Enter trades in the direction of the crossover.',
+                howToTrade: 'Bullish: fast MA crosses above slow MA = BUY\nBearish: fast MA crosses below slow MA = SELL\nUse 20/50 or 50/200 combinations',
+                proTip: 'The larger the timeframe and slower the MAs, the more significant the cross. Daily 50/200 cross is major.',
+                risk: 'MA crosses lag price. You will often enter after the move has started. Use for trend confirmation, not precise timing.'
+            }
+        };
+
+        const popularStocks = [
+            { symbol: 'AAPL', name: 'Apple' },
+            { symbol: 'MSFT', name: 'Microsoft' },
+            { symbol: 'GOOGL', name: 'Google' },
+            { symbol: 'TSLA', name: 'Tesla' },
+            { symbol: 'AMZN', name: 'Amazon' },
+            { symbol: 'NVDA', name: 'NVIDIA' }
+        ];
+
+        class CustomFinancialChart {
+            constructor(containerId, clickCallback) {
+                this.container = document.getElementById(containerId);
+                this.clickCallback = clickCallback;
+                this.data = [];
+                this.indicators = {};
+                this.width = 0;
+                this.height = 0;
+                this.margin = { top: 20, right: 50, bottom: 30, left: 10 };
+
+                this.svg = d3.select(this.container)
+                    .append("svg")
+                    .attr("width", "100%")
+                    .attr("height", "100%");
+
+                this.gridLayer = this.svg.append("g").attr("class", "grid");
+                this.indicatorLayer = this.svg.append("g").attr("class", "indicators");
+                this.candleLayer = this.svg.append("g").attr("class", "candles");
+                this.overlayLayer = this.svg.append("g").attr("class", "overlays");
+                this.axisLayer = this.svg.append("g").attr("class", "axes");
+
+                this.tooltip = d3.select("body").append("div")
+                    .attr("class", "d3-tooltip")
+                    .style("position", "absolute")
+                    .style("visibility", "hidden")
+                    .style("background", "rgba(0,0,0,0.9)")
+                    .style("border", "1px solid #444")
+                    .style("padding", "5px")
+                    .style("color", "#fff")
+                    .style("font-size", "12px")
+                    .style("pointer-events", "none")
+                    .style("border-radius", "4px")
+                    .style("box-shadow", "0 4px 6px rgba(0,0,0,0.3)");
+
+                new ResizeObserver(() => this.resize()).observe(this.container);
+            }
+
+            setData(data, indicators) {
+                this.data = data;
+                this.indicators = indicators;
+                this.draw();
+            }
+
+            resize() {
+                const rect = this.container.getBoundingClientRect();
+                this.width = rect.width;
+                this.height = rect.height;
+                this.svg.attr("viewBox", [0, 0, this.width, this.height]);
+                this.draw();
+            }
+
+            draw() {
+                if (!this.data || this.data.length === 0) return;
+
+                const x = d3.scaleLinear()
+                    .domain(d3.extent(this.data, (d, i) => i))
+                    .range([this.margin.left, this.width - this.margin.right]);
+
+                const minPrice = d3.min(this.data, d => d.l);
+                const maxPrice = d3.max(this.data, d => d.h);
+                const padding = (maxPrice - minPrice) * 0.1;
+
+                const y = d3.scaleLinear()
+                    .domain([minPrice - padding, maxPrice + padding])
+                    .range([this.height - this.margin.bottom, this.margin.top]);
+
+                this.candleLayer.selectAll("*").remove();
+                this.indicatorLayer.selectAll("*").remove();
+                this.gridLayer.selectAll("*").remove();
+                this.axisLayer.selectAll("*").remove();
+                this.overlayLayer.selectAll("*").remove();
+
+                const xAxisGrid = d3.axisBottom(x).ticks(this.width / 100).tickSize(-this.height + this.margin.top + this.margin.bottom).tickFormat("");
+                const yAxisGrid = d3.axisLeft(y).ticks(this.height / 50).tickSize(-this.width + this.margin.left + this.margin.right).tickFormat("");
+
+                this.gridLayer.append("g")
+                    .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+                    .call(xAxisGrid)
+                    .attr("color", "#2a2a2a");
+
+                this.gridLayer.append("g")
+                    .attr("transform", `translate(${this.margin.left},0)`)
+                    .call(yAxisGrid)
+                    .attr("color", "#2a2a2a");
+
+                const line = d3.line()
+                    .x((d, i) => x(i))
+                    .y(d => y(d))
+                    .defined(d => d !== null);
+
+                if (this.indicators.sma20) {
+                    this.indicatorLayer.append("path")
+                        .datum(this.indicators.sma20)
+                        .attr("fill", "none")
+                        .attr("stroke", "#2196F3")
+                        .attr("stroke-width", 2)
+                        .attr("d", line);
+                }
+                if (this.indicators.sma50) {
+                    this.indicatorLayer.append("path")
+                        .datum(this.indicators.sma50)
+                        .attr("fill", "none")
+                        .attr("stroke", "#FF9800")
+                        .attr("stroke-width", 2)
+                        .attr("d", line);
+                }
+                if (this.indicators.sma200) {
+                    this.indicatorLayer.append("path")
+                        .datum(this.indicators.sma200)
+                        .attr("fill", "none")
+                        .attr("stroke", "#F44336")
+                        .attr("stroke-width", 2)
+                        .attr("d", line);
+                }
+
+                const candleWidth = Math.max(1, (this.width - this.margin.left - this.margin.right) / this.data.length * 0.7);
+
+                this.candleLayer.selectAll("candle")
+                    .data(this.data)
+                    .join("g")
+                    .attr("class", "candle-group")
+                    .attr("transform", (d, i) => `translate(${x(i)}, 0)`)
+                    .each(function (d) {
+                        const g = d3.select(this);
+                        const isBullish = d.c >= d.o;
+                        const color = isBullish ? "#26a69a" : "#ef5350";
+
+                        g.append("line")
+                            .attr("x1", 0)
+                            .attr("x2", 0)
+                            .attr("y1", y(d.h))
+                            .attr("y2", y(d.l))
+                            .attr("stroke", color)
+                            .attr("stroke-width", 1);
+
+                        const bodyY = y(Math.max(d.o, d.c));
+                        const bodyHeight = Math.max(1, Math.abs(y(d.o) - y(d.c)));
+
+                        g.append("rect")
+                            .attr("x", -candleWidth / 2)
+                            .attr("y", bodyY)
+                            .attr("width", candleWidth)
+                            .attr("height", bodyHeight)
+                            .attr("fill", color);
+                    });
+
+                const annotations = this.indicators.annotations || [];
+
+                annotations.forEach(ann => {
+                    if (ann.type === 'line') {
+                        this.overlayLayer.append("line")
+                            .attr("x1", this.margin.left)
+                            .attr("x2", this.width - this.margin.right)
+                            .attr("y1", y(ann.value))
+                            .attr("y2", y(ann.value))
+                            .attr("stroke", ann.color)
+                            .attr("stroke-dasharray", "4 2")
+                            .attr("stroke-width", 1)
+                            .attr("opacity", 0.7);
+                    } else if (ann.type === 'label') {
+                        const textGroup = this.overlayLayer.append("g")
+                            .attr("transform", `translate(${ann.x || this.margin.left + 10}, ${y(ann.y)})`)
+                            .style("cursor", "pointer");
+
+                        const textWidth = ann.text.length * 7;
+                        textGroup.append("rect")
+                            .attr("x", -5)
+                            .attr("y", -12)
+                            .attr("width", textWidth)
+                            .attr("height", 18)
+                            .attr("fill", ann.bgColor)
+                            .attr("opacity", 0.8)
+                            .attr("rx", 2);
+
+                        textGroup.append("text")
+                            .attr("fill", ann.color)
+                            .attr("font-size", "10px")
+                            .attr("font-family", "sans-serif")
+                            .text(ann.text);
+
+                        textGroup.on("click", (event) => {
+                            event.stopPropagation();
+                            this.clickCallback(ann.key);
+                        });
+                    } else if (ann.type === 'arrow') {
+                        this.overlayLayer.append("line")
+                            .attr("x1", this.width / 2)
+                            .attr("x2", this.width / 2 + (ann.ax || 0))
+                            .attr("y1", y(ann.y))
+                            .attr("y2", y(ann.y) + (ann.ay || 0))
+                            .attr("stroke", ann.color)
+                            .attr("stroke-width", 2);
+
+                        const text = this.overlayLayer.append("text")
+                            .attr("x", this.width / 2 + (ann.ax || 0) + 10)
+                            .attr("y", y(ann.y) + (ann.ay || 0))
+                            .attr("fill", ann.color)
+                            .attr("font-size", "11px")
+                            .attr("font-weight", "bold")
+                            .text(ann.text)
+                            .style("cursor", "pointer");
+
+                        text.on("click", (event) => {
+                            event.stopPropagation();
+                            this.clickCallback(ann.key);
+                        });
+                    }
+                });
+
+                this.axisLayer.append("g")
+                    .attr("transform", `translate(0,${this.height - this.margin.bottom})`)
+                    .call(d3.axisBottom(x).ticks(5).tickFormat(d => {
+                        if (!this.data[Math.floor(d)]) return "";
+                        const date = new Date(this.data[Math.floor(d)].t * 1000);
+                        return (date.getMonth() + 1) + "/" + date.getDate();
+                    }))
+                    .attr("color", "#7a7a7a")
+                    .attr("font-size", "10px");
+
+                this.axisLayer.append("g")
+                    .attr("transform", `translate(${this.width - this.margin.right},0)`)
+                    .call(d3.axisRight(y).ticks(5).tickFormat(d3.format("$.2f")))
+                    .attr("color", "#7a7a7a")
+                    .attr("font-size", "10px");
+
+                const overlay = this.svg.append("rect")
+                    .attr("class", "overlay")
+                    .attr("width", this.width)
+                    .attr("height", this.height)
+                    .style("opacity", 0)
+                    .style("cursor", "crosshair");
+
+                overlay.on("mousemove", (event) => {
+                    const [mx] = d3.pointer(event);
+                    const i = Math.round(x.invert(mx));
+                    if (i >= 0 && i < this.data.length) {
+                        const d = this.data[i];
+                        const date = new Date(d.t * 1000).toLocaleDateString();
+                        const price = d.c;
+                        this.tooltip
+                            .style("visibility", "visible")
+                            .html(`<div style="margin-bottom:2px; color:#aaa; font-size:10px;">${date}</div>
+                                   <div style="font-weight:bold;">${price.toFixed(2)}</div>
+                                   <div style="font-size:10px;">O: ${d.o.toFixed(2)} H: ${d.h.toFixed(2)} L: ${d.l.toFixed(2)} C: ${d.c.toFixed(2)}</div>`)
+                            .style("left", (event.pageX + 10) + "px")
+                            .style("top", (event.pageY - 10) + "px");
+                    }
+                }).on("mouseout", () => {
+                    this.tooltip.style("visibility", "hidden");
+                });
+            }
+        }
+
+        function openTierModal() {
+            document.getElementById('tierModal').classList.add('show');
+        }
+
+        function closeTierModal() {
+            document.getElementById('tierModal').classList.remove('show');
+        }
+
+        function selectTier(tier) {
+            currentTier = tier;
+            document.getElementById('current-tier').textContent = tier;
+            closeTierModal();
+
+            const iconMap = {
+                'Pawn': 'fa-chess-pawn',
+                'Rook': 'fa-chess-rook',
+                'Knight': 'fa-chess-knight'
+            };
+            document.querySelector('.tier-badge i').className = `fas ${iconMap[tier]}`;
+        }
+
+        async function initDashboard() {
+            await loadMarketIndices();
+            renderStockSelector();
+            setupEventListeners();
+            updateTimestamp();
+            setInterval(updateTimestamp, 60000);
+
+            chartInstance = new CustomFinancialChart('chart-canvas-container', handleAnnotationClick);
+        }
+
+        function updateTimestamp() {
+            const now = new Date();
+            document.getElementById('last-update').textContent = `Updated ${now.toLocaleTimeString()}`;
+        }
+
+        async function loadMarketIndices() {
+            const indices = [
+                { symbol: '^GSPC', name: 'S&P 500' },
+                { symbol: '^DJI', name: 'Dow Jones' },
+                { symbol: '^IXIC', name: 'NASDAQ' },
+                { symbol: '^RUT', name: 'Russell 2000' }
+            ];
+
+            const container = document.getElementById('market-indices');
+            container.innerHTML = '';
+
+            for (const index of indices) {
+                try {
+                    const quote = await fetchQuote(index.symbol);
+                    const card = createIndexCard(index.name, quote);
+                    container.appendChild(card);
+                } catch (error) {
+                    console.error(`Error loading ${index.name}:`, error);
+                    const card = document.createElement('div');
+                    card.className = 'stat-card';
+                    card.innerHTML = `
+                        <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">${index.name}</div>
+                        <div class="text-sm" style="color: var(--color-text-muted);">Data unavailable</div>
+                    `;
+                    container.appendChild(card);
+                }
+            }
+        }
+
+        function createIndexCard(name, quote) {
+            const card = document.createElement('div');
+            card.className = 'stat-card';
+
+            const price = quote.c || 0;
+            const prevClose = quote.pc || price;
+
+            const change = price - prevClose;
+            let changePercent = 0;
+
+            if (prevClose !== 0) {
+                changePercent = ((change / prevClose) * 100);
+            }
+
+            const isPositive = change >= 0;
+
+            let changeHtml = '';
+            if (Math.abs(change) > 0.01) {
+                changeHtml = `
+                    <div class="text-sm font-semibold mt-1 ${isPositive ? 'text-green-500' : 'text-red-500'}">
+                        ${isPositive ? '+' : ''}${change.toFixed(2)} (${isPositive ? '+' : ''}${changePercent.toFixed(2)}%)
+                    </div>
+                `;
+            } else {
+                changeHtml = `
+                    <div class="text-xs mt-1" style="color: var(--color-text-muted); font-style: italic;">
+                        Market Closed
+                    </div>
+                `;
+            }
+
+            card.innerHTML = `
+                <div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">${name}</div>
+                <div class="text-2xl font-bold" style="color: var(--color-text-primary);">${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
+                ${changeHtml}
+            `;
+
+            return card;
+        }
+
+        function renderStockSelector() {
+            const container = document.getElementById('stock-selector');
+            container.innerHTML = '';
+
+            popularStocks.forEach(stock => {
+                const card = document.createElement('div');
+                card.className = 'stock-card';
+                card.innerHTML = `
+                    <div class="text-center">
+                        <div class="text-lg font-bold" style="color: var(--color-text-primary); font-family: var(--font-serif);">${stock.symbol}</div>
+                        <div class="text-xs mt-1" style="color: var(--color-text-muted); font-style: italic;">${stock.name}</div>
+                    </div>
+                `;
+                card.onclick = () => selectStock(stock.symbol, card);
+                container.appendChild(card);
+            });
+        }
+
+        async function selectStock(symbol, cardElement) {
+            currentStock = symbol;
+
+            document.querySelectorAll('.stock-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            cardElement.classList.add('selected');
+
+            document.getElementById('current-symbol').textContent = symbol;
+            document.getElementById('loading-state').classList.remove('hidden');
+            document.getElementById('chart-wrapper').classList.add('hidden');
+            document.getElementById('stats-grid').classList.add('hidden');
+
+            try {
+                await Promise.all([
+                    loadStockData(symbol),
+                    loadTechnicalAnalysis(symbol),
+                    loadPatterns(symbol)
+                ]);
+
+                document.getElementById('loading-state').classList.add('hidden');
+                document.getElementById('chart-wrapper').classList.remove('hidden');
+                document.getElementById('stats-grid').classList.remove('hidden');
+
+                if (chartInstance) chartInstance.resize();
+            } catch (error) {
+                console.error('Error loading stock data:', error);
+                alert('Error loading stock data. Please try again.');
+            }
+        }
+
+        async function loadStockData(symbol) {
+            const timeframe = document.getElementById('timeframe').value;
+            const interval = getInterval(timeframe);
+            const range = getRange(timeframe);
+
+            const quote = await fetchQuote(symbol);
+            const candles = await fetchCandles(symbol, interval, range);
+
+            updateStats(quote);
+            
+            const sma20 = calculateSMA(candles.c, 20);
+            const sma50 = calculateSMA(candles.c, 50);
+            const sma200 = calculateSMA(candles.c, 200);
+            const rsi = calculateRSI(candles.c, 14);
+            const macdResult = calculateMACD(candles.c);
+            const bollinger = calculateBollinger(candles.c, 20, 2);
+            const atr = calculateATR(candles.h, candles.l, candles.c, 14);
+
+            const recentCandles = Math.min(50, candles.c.length);
+            const support = Math.min(...candles.l.slice(-recentCandles));
+            const resistance = Math.max(...candles.h.slice(-recentCandles));
+            const currentPrice = candles.c[candles.c.length - 1];
+            const prevPrice = candles.c[candles.c.length - 2];
+            const annotations = [];
+
+            const pivotPoints = calculatePivotPoints(candles.h.slice(-1)[0], candles.l.slice(-1)[0], candles.c.slice(-1)[0]);
+            
+            annotations.push({ type: 'line', value: support, color: '#26a69a' });
+            annotations.push({ type: 'label', y: support, x: 10, text: `SUP ${support.toFixed(2)}`, color: '#26a69a', bgColor: 'rgba(38, 166, 154, 0.2)', key: 'support' });
+
+            annotations.push({ type: 'line', value: resistance, color: '#ef5350' });
+            annotations.push({ type: 'label', y: resistance, x: 10, text: `RES ${resistance.toFixed(2)}`, color: '#ef5350', bgColor: 'rgba(239, 83, 80, 0.2)', key: 'resistance' });
+
+            annotations.push({ type: 'line', value: pivotPoints.pivot, color: '#ffc107', opacity: 0.5 });
+            annotations.push({ type: 'label', y: pivotPoints.pivot, x: 10, text: `PIVOT ${pivotPoints.pivot.toFixed(2)}`, color: '#ffc107', bgColor: 'rgba(255, 193, 7, 0.15)', key: 'consolidation' });
+
+            const lastIdx = sma50.length - 1;
+            if (sma50[lastIdx - 5] !== null && sma200[lastIdx - 5] !== null && sma50[lastIdx] !== null && sma200[lastIdx] !== null) {
+                if (sma50[lastIdx - 5] < sma200[lastIdx - 5] && sma50[lastIdx] > sma200[lastIdx]) {
+                    annotations.push({ type: 'arrow', y: sma50[lastIdx], text: 'GOLDEN CROSS', color: '#FFD700', key: 'goldenCross', ax: 40, ay: -40 });
+                }
+                if (sma50[lastIdx - 5] > sma200[lastIdx - 5] && sma50[lastIdx] < sma200[lastIdx]) {
+                    annotations.push({ type: 'arrow', y: sma50[lastIdx], text: 'DEATH CROSS', color: '#8B0000', key: 'deathCross', ax: 40, ay: 40 });
+                }
+            }
+
+            const currentRSI = rsi[rsi.length - 1];
+            const prevRSI = rsi[rsi.length - 2];
+            
+            if (currentRSI < 30) {
+                annotations.push({ type: 'arrow', y: candles.l[candles.l.length - 1], text: `RSI ${currentRSI.toFixed(0)}`, color: '#26a69a', key: 'oversold', ax: -50, ay: 40 });
+            } else if (currentRSI > 70) {
+                annotations.push({ type: 'arrow', y: candles.h[candles.h.length - 1], text: `RSI ${currentRSI.toFixed(0)}`, color: '#ef5350', key: 'overbought', ax: -50, ay: -40 });
+            }
+
+            if (currentPrice > prevPrice * 1.005 && prevRSI > currentRSI && currentRSI > 60) {
+                annotations.push({ type: 'arrow', y: currentPrice, text: 'BEAR DIV', color: '#ff6b6b', key: 'divergence', ax: -60, ay: -35 });
+            }
+            if (currentPrice < prevPrice * 0.995 && prevRSI < currentRSI && currentRSI < 40) {
+                annotations.push({ type: 'arrow', y: currentPrice, text: 'BULL DIV', color: '#51cf66', key: 'divergence', ax: -60, ay: 35 });
+            }
+
+            const macdLine = macdResult.macd[macdResult.macd.length - 1];
+            const signalLine = macdResult.signal[macdResult.signal.length - 1];
+            const prevMacdLine = macdResult.macd[macdResult.macd.length - 2];
+            const prevSignalLine = macdResult.signal[macdResult.signal.length - 2];
+            
+            if (macdLine !== null && signalLine !== null && prevMacdLine !== null && prevSignalLine !== null) {
+                if (prevMacdLine < prevSignalLine && macdLine > signalLine) {
+                    annotations.push({ type: 'arrow', y: candles.l[candles.l.length - 1], text: 'MACD BULL', color: '#4dabf7', key: 'macdBullish', ax: 50, ay: 40 });
+                }
+                if (prevMacdLine > prevSignalLine && macdLine < signalLine) {
+                    annotations.push({ type: 'arrow', y: candles.h[candles.h.length - 1], text: 'MACD BEAR', color: '#ff8787', key: 'macdBearish', ax: 50, ay: -40 });
+                }
+            }
+
+            const recentHigh = Math.max(...candles.h.slice(-10, -1));
+            const recentLow = Math.min(...candles.l.slice(-10, -1));
+            
+            if (currentPrice > recentHigh * 1.015 && candles.v[candles.v.length - 1] > candles.v[candles.v.length - 2] * 1.5) {
+                annotations.push({ type: 'arrow', y: currentPrice, text: 'BREAKOUT', color: '#26a69a', key: 'breakout', ax: -45, ay: -45 });
+            }
+            if (currentPrice < recentLow * 0.985 && candles.v[candles.v.length - 1] > candles.v[candles.v.length - 2] * 1.5) {
+                annotations.push({ type: 'arrow', y: currentPrice, text: 'BREAKDOWN', color: '#ef5350', key: 'breakdown', ax: -45, ay: 45 });
+            }
+
+            const upperBB = bollinger.upper[bollinger.upper.length - 1];
+            const lowerBB = bollinger.lower[bollinger.lower.length - 1];
+            const middleBB = bollinger.middle[bollinger.middle.length - 1];
+            
+            if (currentPrice > upperBB) {
+                annotations.push({ type: 'line', value: upperBB, color: '#e91e63', opacity: 0.4 });
+                annotations.push({ type: 'label', y: upperBB, x: 10, text: `BB+ ${upperBB.toFixed(2)}`, color: '#e91e63', bgColor: 'rgba(233, 30, 99, 0.15)', key: 'resistance' });
+            }
+            if (currentPrice < lowerBB) {
+                annotations.push({ type: 'line', value: lowerBB, color: '#00bcd4', opacity: 0.4 });
+                annotations.push({ type: 'label', y: lowerBB, x: 10, text: `BB- ${lowerBB.toFixed(2)}`, color: '#00bcd4', bgColor: 'rgba(0, 188, 212, 0.15)', key: 'support' });
+            }
+
+            const avgVolume = candles.v.slice(-20).reduce((a, b) => a + b, 0) / 20;
+            const currentVolume = candles.v[candles.v.length - 1];
+            
+            if (currentVolume > avgVolume * 2) {
+                annotations.push({ type: 'arrow', y: currentPrice, text: `VOL ${(currentVolume / avgVolume).toFixed(1)}x`, color: '#9c27b0', key: 'volumeSpike', ax: 0, ay: 50 });
+            }
+
+            const trendlinePoints = detectTrendline(candles.h, candles.l, candles.c);
+            if (trendlinePoints.resistance) {
+                annotations.push({ type: 'line', value: trendlinePoints.resistance, color: '#ff6b6b', opacity: 0.3 });
+            }
+            if (trendlinePoints.support) {
+                annotations.push({ type: 'line', value: trendlinePoints.support, color: '#51cf66', opacity: 0.3 });
+            }
+
+            const rangeWidth = (resistance - support) / support;
+            if (rangeWidth < 0.05) {
+                const midRange = (resistance + support) / 2;
+                annotations.push({ type: 'label', y: midRange, x: 10, text: `CONSOLIDATION ${(rangeWidth * 100).toFixed(1)}%`, color: '#ffc107', bgColor: 'rgba(255, 193, 7, 0.15)', key: 'consolidation' });
+            }
+
+            const gapThreshold = 0.02;
+            for (let i = 1; i < candles.o.length; i++) {
+                const gap = (candles.o[i] - candles.c[i - 1]) / candles.c[i - 1];
+                if (gap > gapThreshold) {
+                    annotations.push({ type: 'arrow', y: candles.o[i], text: 'GAP UP', color: '#69db7c', key: 'gapUp', ax: 0, ay: -30 });
+                } else if (gap < -gapThreshold) {
+                    annotations.push({ type: 'arrow', y: candles.o[i], text: 'GAP DOWN', color: '#ff6b6b', key: 'gapDown', ax: 0, ay: 30 });
+                }
+            }
+
+            for (let i = candles.c.length - 20; i < candles.c.length; i++) {
+                const open = candles.o[i];
+                const close = candles.c[i];
+                const high = candles.h[i];
+                const low = candles.l[i];
+                const body = Math.abs(close - open);
+                const range = high - low;
+                const lowerWick = Math.min(open, close) - low;
+                const upperWick = high - Math.max(open, close);
+
+                if (lowerWick > body * 2 && body < range * 0.3 && close > open) {
+                    annotations.push({ type: 'arrow', y: low, text: 'HAMMER', color: '#51cf66', key: 'hammer', ax: 0, ay: 25 });
+                }
+                
+                if (upperWick > body * 2 && body < range * 0.3 && open > close) {
+                    annotations.push({ type: 'arrow', y: high, text: 'SHOOT STAR', color: '#ff6b6b', key: 'shootingStar', ax: 0, ay: -25 });
+                }
+                
+                if (body < range * 0.1) {
+                    annotations.push({ type: 'arrow', y: close, text: 'DOJI', color: '#ffd43b', key: 'doji', ax: 0, ay: 20 });
+                }
+            }
+
+            const sma20Current = sma20[sma20.length - 1];
+            const sma50Current = sma50[sma50.length - 1];
+            const sma20Prev = sma20[sma20.length - 2];
+            const sma50Prev = sma50[sma50.length - 2];
+            
+            if (sma20Prev !== null && sma50Prev !== null && sma20Current !== null && sma50Current !== null) {
+                if (sma20Prev < sma50Prev && sma20Current > sma50Current) {
+                    annotations.push({ type: 'arrow', y: sma20Current, text: 'MA CROSS BULL', color: '#37b24d', key: 'movingAverageCross', ax: 45, ay: -35 });
+                }
+                if (sma20Prev > sma50Prev && sma20Current < sma50Current) {
+                    annotations.push({ type: 'arrow', y: sma20Current, text: 'MA CROSS BEAR', color: '#f03e3e', key: 'movingAverageCross', ax: 45, ay: 35 });
+                }
+            }
+
+            const chartData = candles.t.map((t, i) => ({
+                t: t,
+                o: candles.o[i],
+                h: candles.h[i],
+                l: candles.l[i],
+                c: candles.c[i],
+                v: candles.v[i]
+            }));
+
+            const chartIndicators = {
+                sma20, 
+                sma50, 
+                sma200,
+                bollingerUpper: bollinger.upper,
+                bollingerLower: bollinger.lower,
+                bollingerMiddle: bollinger.middle,
+                annotations
+            };
+
+            chartInstance.setData(chartData, chartIndicators);
+        }
+
+        function calculatePivotPoints(high, low, close) {
+            const pivot = (high + low + close) / 3;
+            const r1 = 2 * pivot - low;
+            const r2 = pivot + (high - low);
+            const s1 = 2 * pivot - high;
+            const s2 = pivot - (high - low);
+            return { pivot, r1, r2, s1, s2 };
+        }
+
+        function detectTrendline(highs, lows, closes) {
+            const recentHighs = highs.slice(-20);
+            const recentLows = lows.slice(-20);
+            
+            const resistanceLine = Math.max(...recentHighs.slice(-5));
+            const supportLine = Math.min(...recentLows.slice(-5));
+            
+            return {
+                resistance: resistanceLine,
+                support: supportLine
+            };
+        }
+
+        async function loadPatterns(symbol) {
+            const container = document.getElementById('pattern-container');
+            
+            try {
+                const candles = await fetchCandles(symbol, '1d', '3mo');
+                const quote = await fetchQuote(symbol);
+                
+                const patterns = {
+                    bullish: [],
+                    bearish: [],
+                    neutral: []
+                };
+
+                const currentPrice = candles.c[candles.c.length - 1];
+                const sma20 = calculateSMA(candles.c, 20);
+                const sma50 = calculateSMA(candles.c, 50);
+                const sma200 = calculateSMA(candles.c, 200);
+                const rsi = calculateRSI(candles.c, 14);
+                const macdResult = calculateMACD(candles.c);
+                const bollinger = calculateBollinger(candles.c, 20, 2);
+                
+                const currentSMA20 = sma20[sma20.length - 1];
+                const currentSMA50 = sma50[sma50.length - 1];
+                const currentSMA200 = sma200[sma200.length - 1];
+                const currentRSI = rsi[rsi.length - 1];
+                const macdLine = macdResult.macd[macdResult.macd.length - 1];
+                const signalLine = macdResult.signal[macdResult.signal.length - 1];
+                const histogram = macdResult.histogram[macdResult.histogram.length - 1];
+                const upperBB = bollinger.upper[bollinger.upper.length - 1];
+                const lowerBB = bollinger.lower[bollinger.lower.length - 1];
+                const middleBB = bollinger.middle[bollinger.middle.length - 1];
+
+                if (currentPrice > currentSMA20 && currentSMA20 > currentSMA50 && currentSMA50 > currentSMA200) {
+                    patterns.bullish.push('Triple MA Bullish Alignment');
+                }
+                
+                if (currentPrice < currentSMA20 && currentSMA20 < currentSMA50 && currentSMA50 < currentSMA200) {
+                    patterns.bearish.push('Triple MA Bearish Alignment');
+                }
+
+                const prevSMA50 = sma50[sma50.length - 2];
+                const prevSMA200 = sma200[sma200.length - 2];
+                if (prevSMA50 < prevSMA200 && currentSMA50 > currentSMA200) {
+                    patterns.bullish.push('Golden Cross (50/200)');
+                }
+                if (prevSMA50 > prevSMA200 && currentSMA50 < currentSMA200) {
+                    patterns.bearish.push('Death Cross (50/200)');
+                }
+
+                if (currentRSI < 30) {
+                    patterns.bullish.push(`Oversold RSI (${currentRSI.toFixed(1)})`);
+                } else if (currentRSI > 70) {
+                    patterns.bearish.push(`Overbought RSI (${currentRSI.toFixed(1)})`);
+                }
+
+                const prevRSI = rsi[rsi.length - 2];
+                const priceChange = currentPrice - candles.c[candles.c.length - 2];
+                if (priceChange > 0 && prevRSI > currentRSI && currentRSI > 60) {
+                    patterns.bearish.push('Bearish RSI Divergence');
+                }
+                if (priceChange < 0 && prevRSI < currentRSI && currentRSI < 40) {
+                    patterns.bullish.push('Bullish RSI Divergence');
+                }
+
+                if (macdLine > signalLine && histogram > 0) {
+                    patterns.bullish.push('MACD Bullish Crossover');
+                } else if (macdLine < signalLine && histogram < 0) {
+                    patterns.bearish.push('MACD Bearish Crossover');
+                }
+
+                if (macdLine > 0 && signalLine > 0) {
+                    patterns.bullish.push('MACD Above Zero Line');
+                } else if (macdLine < 0 && signalLine < 0) {
+                    patterns.bearish.push('MACD Below Zero Line');
+                }
+
+                if (currentPrice > upperBB) {
+                    patterns.bearish.push('Price Above Upper Bollinger');
+                } else if (currentPrice < lowerBB) {
+                    patterns.bullish.push('Price Below Lower Bollinger');
+                }
+
+                const bbWidth = ((upperBB - lowerBB) / middleBB) * 100;
+                if (bbWidth < 5) {
+                    patterns.neutral.push(`Bollinger Squeeze (${bbWidth.toFixed(1)}%)`);
+                }
+
+                const avgVolume = candles.v.slice(-20).reduce((a, b) => a + b, 0) / 20;
+                const currentVolume = candles.v[candles.v.length - 1];
+                const volumeRatio = currentVolume / avgVolume;
+                
+                if (volumeRatio > 2) {
+                    const priceDirection = candles.c[candles.c.length - 1] > candles.o[candles.o.length - 1];
+                    if (priceDirection) {
+                        patterns.bullish.push(`Volume Spike ${volumeRatio.toFixed(1)}x (Bullish)`);
+                    } else {
+                        patterns.bearish.push(`Volume Spike ${volumeRatio.toFixed(1)}x (Bearish)`);
+                    }
+                } else if (volumeRatio < 0.5) {
+                    patterns.neutral.push(`Low Volume (${volumeRatio.toFixed(1)}x)`);
+                }
+
+                const support = Math.min(...candles.l.slice(-20));
+                const resistance = Math.max(...candles.h.slice(-20));
+                const distanceToSupport = ((currentPrice - support) / support) * 100;
+                const distanceToResistance = ((resistance - currentPrice) / currentPrice) * 100;
+
+                if (distanceToSupport < 2) {
+                    patterns.bullish.push('Near Support Level');
+                }
+                if (distanceToResistance < 2) {
+                    patterns.bearish.push('Near Resistance Level');
+                }
+
+                const recentHigh = Math.max(...candles.h.slice(-10, -1));
+                const recentLow = Math.min(...candles.l.slice(-10, -1));
+                
+                if (currentPrice > recentHigh * 1.01) {
+                    patterns.bullish.push('Breakout Above Range');
+                }
+                if (currentPrice < recentLow * 0.99) {
+                    patterns.bearish.push('Breakdown Below Range');
+                }
+
+                const rangeWidth = ((resistance - support) / support) * 100;
+                if (rangeWidth < 5) {
+                    patterns.neutral.push(`Tight Consolidation (${rangeWidth.toFixed(1)}%)`);
+                }
+
+                for (let i = candles.c.length - 10; i < candles.c.length; i++) {
+                    const open = candles.o[i];
+                    const close = candles.c[i];
+                    const high = candles.h[i];
+                    const low = candles.l[i];
+                    const body = Math.abs(close - open);
+                    const range = high - low;
+                    const lowerWick = Math.min(open, close) - low;
+                    const upperWick = high - Math.max(open, close);
+
+                    if (lowerWick > body * 2 && body < range * 0.3 && close > open) {
+                        patterns.bullish.push('Hammer Candle Pattern');
+                        break;
+                    }
+                }
+
+                for (let i = candles.c.length - 10; i < candles.c.length; i++) {
+                    const open = candles.o[i];
+                    const close = candles.c[i];
+                    const high = candles.h[i];
+                    const low = candles.l[i];
+                    const body = Math.abs(close - open);
+                    const range = high - low;
+                    const upperWick = high - Math.max(open, close);
+
+                    if (upperWick > body * 2 && body < range * 0.3 && open > close) {
+                        patterns.bearish.push('Shooting Star Pattern');
+                        break;
+                    }
+                }
+
+                for (let i = candles.c.length - 5; i < candles.c.length; i++) {
+                    const body = Math.abs(candles.c[i] - candles.o[i]);
+                    const range = candles.h[i] - candles.l[i];
+                    
+                    if (body < range * 0.1) {
+                        patterns.neutral.push('Doji Indecision');
+                        break;
+                    }
+                }
+
+                for (let i = 1; i < candles.o.length; i++) {
+                    const gap = (candles.o[i] - candles.c[i - 1]) / candles.c[i - 1];
+                    if (gap > 0.02) {
+                        patterns.bullish.push(`Gap Up ${(gap * 100).toFixed(1)}%`);
+                    } else if (gap < -0.02) {
+                        patterns.bearish.push(`Gap Down ${(Math.abs(gap) * 100).toFixed(1)}%`);
+                    }
+                }
+
+                const atr = calculateATR(candles.h, candles.l, candles.c, 14);
+                const currentATR = atr[atr.length - 1];
+                const atrPercent = (currentATR / currentPrice) * 100;
+                
+                if (atrPercent > 5) {
+                    patterns.neutral.push(`High Volatility (ATR ${atrPercent.toFixed(1)}%)`);
+                } else if (atrPercent < 2) {
+                    patterns.neutral.push(`Low Volatility (ATR ${atrPercent.toFixed(1)}%)`);
+                }
+
+                let consecutiveUp = 0;
+                let consecutiveDown = 0;
+                for (let i = candles.c.length - 1; i > candles.c.length - 6; i--) {
+                    if (candles.c[i] > candles.c[i - 1]) consecutiveUp++;
+                    if (candles.c[i] < candles.c[i - 1]) consecutiveDown++;
+                }
+                
+                if (consecutiveUp >= 4) {
+                    patterns.bullish.push(`${consecutiveUp} Consecutive Up Days`);
+                }
+                if (consecutiveDown >= 4) {
+                    patterns.bearish.push(`${consecutiveDown} Consecutive Down Days`);
+                }
+
+                const priceVsMA50 = ((currentPrice - currentSMA50) / currentSMA50) * 100;
+                if (priceVsMA50 > 10) {
+                    patterns.bearish.push(`Extended Above 50-MA (${priceVsMA50.toFixed(1)}%)`);
+                } else if (priceVsMA50 < -10) {
+                    patterns.bullish.push(`Extended Below 50-MA (${Math.abs(priceVsMA50).toFixed(1)}%)`);
+                }
+
+                if (patterns.bullish.length === 0 && patterns.bearish.length === 0) {
+                    patterns.neutral.push('No Clear Pattern Detected');
+                }
+
+                let html = '<div class="space-y-4">';
+                
+                if (patterns.bullish.length > 0) {
+                    html += '<div>';
+                    html += '<div class="text-sm font-semibold mb-2 flex items-center gap-2" style="color: #26a69a;">';
+                    html += '<i class="fas fa-arrow-trend-up"></i>';
+                    html += `<span>Bullish Patterns (${patterns.bullish.length})</span>`;
+                    html += '</div>';
+                    html += '<div class="flex flex-wrap gap-2">';
+                    patterns.bullish.forEach(pattern => {
+                        html += `<span class="pattern-badge pattern-bullish">${pattern}</span>`;
+                    });
+                    html += '</div></div>';
+                }
+
+                if (patterns.bearish.length > 0) {
+                    html += '<div>';
+                    html += '<div class="text-sm font-semibold mb-2 flex items-center gap-2" style="color: #ef5350;">';
+                    html += '<i class="fas fa-arrow-trend-down"></i>';
+                    html += `<span>Bearish Patterns (${patterns.bearish.length})</span>`;
+                    html += '</div>';
+                    html += '<div class="flex flex-wrap gap-2">';
+                    patterns.bearish.forEach(pattern => {
+                        html += `<span class="pattern-badge pattern-bearish">${pattern}</span>`;
+                    });
+                    html += '</div></div>';
+                }
+
+                if (patterns.neutral.length > 0) {
+                    html += '<div>';
+                    html += '<div class="text-sm font-semibold mb-2 flex items-center gap-2" style="color: #ffc107;">';
+                    html += '<i class="fas fa-minus"></i>';
+                    html += `<span>Neutral Signals (${patterns.neutral.length})</span>`;
+                    html += '</div>';
+                    html += '<div class="flex flex-wrap gap-2">';
+                    patterns.neutral.forEach(pattern => {
+                        html += `<span class="pattern-badge pattern-neutral">${pattern}</span>`;
+                    });
+                    html += '</div></div>';
+                }
+
+                const totalPatterns = patterns.bullish.length + patterns.bearish.length + patterns.neutral.length;
+                const bullishScore = patterns.bullish.length;
+                const bearishScore = patterns.bearish.length;
+                
+                html += '<div class="mt-4 p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">';
+                html += '<div class="text-xs mb-2 uppercase tracking-wide font-medium" style="color: var(--color-text-muted);">Pattern Score</div>';
+                html += `<div class="text-lg font-bold" style="color: var(--color-text-primary);">`;
+                
+                if (bullishScore > bearishScore) {
+                    html += `<span class="text-green-500">+${bullishScore - bearishScore} Bullish</span>`;
+                } else if (bearishScore > bullishScore) {
+                    html += `<span class="text-red-500">-${bearishScore - bullishScore} Bearish</span>`;
+                } else {
+                    html += `<span style="color: #ffc107;">Neutral</span>`;
+                }
+                
+                html += `</div>`;
+                html += `<div class="text-xs mt-1" style="color: var(--color-text-muted);">${totalPatterns} total patterns detected</div>`;
+                html += '</div>';
+
+                html += '</div>';
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Error loading patterns:', error);
+                container.innerHTML = '<p class="text-red-400 text-sm">Error detecting patterns</p>';
+            }
+        }
+
+        function getInterval(timeframe) {
+            const intervals = {
+                '1D': '5m',
+                '5D': '15m',
+                '1M': '1d',
+                '3M': '1d',
+                '6M': '1wk',
+                '1Y': '1mo'
+            };
+            return intervals[timeframe] || '1d';
+        }
+
+        function getRange(timeframe) {
+            const ranges = {
+                '1D': '1d',
+                '5D': '5d',
+                '1M': '1mo',
+                '3M': '3mo',
+                '6M': '6mo',
+                '1Y': '1y'
+            };
+            return ranges[timeframe] || '1mo';
+        }
+
+        async function fetchQuote(symbol) {
+            const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=1d`;
+            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+
+            if (!data.chart || !data.chart.result || data.chart.result.length === 0) {
+                throw new Error('Invalid data response');
+            }
+
+            const result = data.chart.result[0];
+            const meta = result.meta;
+            const indicators = result.indicators.quote[0];
+
+            return {
+                c: meta.regularMarketPrice,
+                pc: meta.previousClose,
+                d: meta.regularMarketPrice - meta.previousClose,
+                dp: ((meta.regularMarketPrice - meta.previousClose) / meta.previousClose) * 100,
+                o: indicators.open[0],
+                h: indicators.high[0],
+                l: indicators.low[0],
+                v: meta.regularMarketVolume
+            };
+        }
+
+        async function fetchCandles(symbol, interval, range) {
+            const targetUrl = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=${interval}&range=${range}`;
+            const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
+            const response = await fetch(proxyUrl);
+            const data = await response.json();
+            const result = data.chart.result[0];
+            const quotes = result.indicators.quote[0];
+            const timestamps = result.timestamp;
+
+            return {
+                t: timestamps,
+                o: quotes.open,
+                h: quotes.high,
+                l: quotes.low,
+                c: quotes.close,
+                v: quotes.volume
+            };
+        }
+
+        function updateStats(quote) {
+            const price = quote.c ?? 0;
+            const change = quote.d ?? 0;
+            const changePercent = quote.dp ?? 0;
+            const isPositive = change >= 0;
+
+            document.getElementById('stat-price').textContent = price.toFixed(2);
+            document.getElementById('stat-change').textContent =
+                `${isPositive ? '+' : ''}${change.toFixed(2)} (${isPositive ? '+' : ''}${changePercent.toFixed(2)}%)`;
+            document.getElementById('stat-change').className =
+                `text-sm font-semibold mt-1 ${isPositive ? 'text-green-500' : 'text-red-500'}`;
+
+            document.getElementById('stat-open').textContent = (quote.o ?? 0).toFixed(2);
+            document.getElementById('stat-high-low').textContent =
+                `${(quote.h ?? 0).toFixed(2)} / ${(quote.l ?? 0).toFixed(2)}`;
+            document.getElementById('stat-volume').textContent =
+                quote.v ? (quote.v / 1000000).toFixed(2) + 'M' : '-';
+        }
+
+        function handleAnnotationClick(key) {
+            const tooltip = document.getElementById('annotationTooltip');
+            const data = tradingAnnotations[key];
+
+            if (!data) return;
+
+            document.getElementById('tooltip-title-text').textContent = data.title;
+
+            const badge = document.getElementById('tooltip-skill-badge');
+            badge.className = `skill-badge skill-${data.skill}`;
+            badge.textContent = data.skill.substring(0, 3).toUpperCase();
+
+            document.getElementById('tooltip-desc').textContent = data.description;
+            document.getElementById('tooltip-when').textContent = data.whenToUse;
+            document.getElementById('tooltip-how').textContent = data.howToTrade;
+            document.getElementById('tooltip-pro').textContent = data.proTip;
+            document.getElementById('tooltip-risk').textContent = data.risk;
+
+            const rect = tooltip.getBoundingClientRect();
+            const winWidth = window.innerWidth;
+            const winHeight = window.innerHeight;
+
+            tooltip.style.left = (winWidth / 2 - rect.width / 2) + 'px';
+            tooltip.style.top = (winHeight / 2 - rect.height / 2) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function closeTooltip() {
+            document.getElementById('annotationTooltip').classList.remove('show');
+        }
+
+        function calculateSMA(data, period) {
+            const result = [];
+            for (let i = 0; i < data.length; i++) {
+                if (i < period - 1) {
+                    result.push(null);
+                } else {
+                    const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + b, 0);
+                    result.push(sum / period);
+                }
+            }
+            return result;
+        }
+
+        function calculateRSI(data, period) {
+            const result = [];
+            let gains = [];
+            let losses = [];
+
+            for (let i = 1; i < data.length; i++) {
+                const change = data[i] - data[i - 1];
+                gains.push(change > 0 ? change : 0);
+                losses.push(change < 0 ? Math.abs(change) : 0);
+
+                if (i >= period) {
+                    const avgGain = gains.slice(-period).reduce((a, b) => a + b, 0) / period;
+                    const avgLoss = losses.slice(-period).reduce((a, b) => a + b, 0) / period;
+                    const rs = avgLoss === 0 ? 100 : avgGain / avgLoss;
+                    const rsi = 100 - (100 / (1 + rs));
+                    result.push(rsi);
+                } else {
+                    result.push(null);
+                }
+            }
+
+            return [null, ...result];
+        }
+
+        async function loadTechnicalAnalysis(symbol) {
+            const container = document.getElementById('technical-analysis');
+
+            try {
+                const quote = await fetchQuote(symbol);
+                const candles = await fetchCandles(symbol, '1d', '3mo');
+                const change = quote.dp ?? 0;
+
+                const rsi = calculateRSI(candles.c, 14);
+                const currentRSI = rsi[rsi.length - 1];
+                const sma20 = calculateSMA(candles.c, 20);
+                const sma50 = calculateSMA(candles.c, 50);
+                const sma200 = calculateSMA(candles.c, 200);
+                const currentPrice = quote.c ?? 0;
+                const currentSMA20 = sma20[sma20.length - 1] ?? 0;
+                const currentSMA50 = sma50[sma50.length - 1] ?? 0;
+                const currentSMA200 = sma200[sma200.length - 1] ?? 0;
+
+                const support = Math.min(...candles.l.slice(-20));
+                const resistance = Math.max(...candles.h.slice(-20));
+
+                const avgVolume = candles.v.slice(-20).reduce((a, b) => a + b, 0) / 20;
+                const currentVolume = candles.v[candles.v.length - 1];
+                const volumeRatio = currentVolume / avgVolume;
+
+                const macdResult = calculateMACD(candles.c);
+                const macdLine = macdResult.macd[macdResult.macd.length - 1];
+                const signalLine = macdResult.signal[macdResult.signal.length - 1];
+                const histogram = macdResult.histogram[macdResult.histogram.length - 1];
+
+                const bollinger = calculateBollinger(candles.c, 20, 2);
+                const upperBB = bollinger.upper[bollinger.upper.length - 1];
+                const lowerBB = bollinger.lower[bollinger.lower.length - 1];
+                const middleBB = bollinger.middle[bollinger.middle.length - 1];
+
+                const atr = calculateATR(candles.h, candles.l, candles.c, 14);
+                const currentATR = atr[atr.length - 1];
+                const atrPercent = (currentATR / currentPrice) * 100;
+
+                let signal, signalClass, analysis;
+                let signalStrength = 0;
+
+                if (currentPrice > currentSMA20 && currentPrice > currentSMA50) signalStrength += 2;
+                if (currentSMA20 > currentSMA50) signalStrength += 1;
+                if (currentSMA50 > currentSMA200) signalStrength += 2;
+                if (currentRSI > 50 && currentRSI < 70) signalStrength += 1;
+                if (macdLine > signalLine) signalStrength += 1;
+                if (volumeRatio > 1.2) signalStrength += 1;
+                if (currentPrice > support * 1.02) signalStrength += 1;
+
+                if (currentPrice < currentSMA20 && currentPrice < currentSMA50) signalStrength -= 2;
+                if (currentSMA20 < currentSMA50) signalStrength -= 1;
+                if (currentSMA50 < currentSMA200) signalStrength -= 2;
+                if (currentRSI < 50 && currentRSI > 30) signalStrength -= 1;
+                if (macdLine < signalLine) signalStrength -= 1;
+                if (currentPrice < resistance * 0.98) signalStrength -= 1;
+
+                if (signalStrength >= 6) {
+                    signal = 'STRONG BUY';
+                    signalClass = 'signal-buy';
+                    analysis = `Multiple bullish indicators aligned: Price ${((currentPrice - currentSMA50) / currentSMA50 * 100).toFixed(1)}% above 50-MA, momentum positive, volume ${volumeRatio.toFixed(1)}x average. Trend structure intact with higher highs/lows.`;
+                } else if (signalStrength >= 3) {
+                    signal = 'BUY';
+                    signalClass = 'signal-buy';
+                    analysis = `Constructive setup with price holding above key moving averages. RSI at ${currentRSI.toFixed(0)} shows sustainable momentum. ${currentPrice > middleBB ? 'Trading upper Bollinger range.' : 'Room to expand toward resistance.'}`;
+                } else if (signalStrength >= -2) {
+                    signal = 'HOLD';
+                    signalClass = 'signal-hold';
+                    analysis = `Mixed signals: Price in consolidation ${((resistance - support) / support * 100).toFixed(1)}% range. RSI ${currentRSI.toFixed(0)} neutral. Awaiting directional catalyst. ATR ${atrPercent.toFixed(1)}% suggests ${atrPercent > 3 ? 'elevated' : 'normal'} volatility.`;
+                } else if (signalStrength >= -5) {
+                    signal = 'SELL';
+                    signalClass = 'signal-sell';
+                    analysis = `Bearish indicators dominating: Price ${((currentPrice - currentSMA50) / currentSMA50 * 100).toFixed(1)}% below 50-MA. MACD negative divergence. Volume confirms distribution. ${currentPrice < lowerBB ? 'Oversold but trend weak.' : 'Downtrend intact.'}`;
+                } else {
+                    signal = 'STRONG SELL';
+                    signalClass = 'signal-sell';
+                    analysis = `Critical weakness across timeframes. ${currentSMA50 < currentSMA200 ? 'Death cross confirmed. ' : ''}Price breaching support zones. RSI ${currentRSI.toFixed(0)} showing capitulation. Risk management imperative.`;
+                }
+
+                const trendDirection = currentSMA20 > currentSMA50 && currentSMA50 > currentSMA200 ? 'Bullish Alignment' :
+                    currentSMA20 < currentSMA50 && currentSMA50 < currentSMA200 ? 'Bearish Alignment' :
+                        'Mixed/Transitional';
+
+                const rsiState = currentRSI > 70 ? 'Overbought' : currentRSI < 30 ? 'Oversold' : 'Neutral';
+                const macdState = macdLine > signalLine ? (histogram > 0 ? 'Strong Bullish' : 'Weakening Bull') :
+                    (histogram < 0 ? 'Strong Bearish' : 'Weakening Bear');
+
+                const priceVsMA = ((currentPrice - currentSMA50) / currentSMA50 * 100).toFixed(2);
+                const priceVsMAColor = priceVsMA > 0 ? 'text-green-500' : 'text-red-500';
+
+                container.innerHTML = `
+            <div class="mb-6">
+                <div class="text-sm mb-3 flex items-center gap-2" style="color: var(--color-text-muted);">
+                    <i class="fas fa-brain"></i>
+                    <span>Composite Signal</span>
+                </div>
+                <span class="signal-pill ${signalClass}">${signal}</span>
+                <span class="text-xs ml-2" style="color: var(--color-text-muted);">Score: ${signalStrength}/9</span>
+            </div>
+            <div class="mb-4">
+                <div class="text-sm font-semibold mb-2" style="color: var(--color-text-primary);">Market Context</div>
+                <p class="text-sm leading-relaxed" style="color: var(--color-text-secondary);">${analysis}</p>
+            </div>
+            <div class="space-y-2 mt-6">
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">RSI(14)</span>
+                    <span class="text-sm font-semibold" style="color: var(--color-text-primary);">${currentRSI.toFixed(1)} <span class="text-xs" style="color: var(--color-text-muted);">${rsiState}</span></span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">MACD</span>
+                    <span class="text-sm font-semibold ${macdLine > signalLine ? 'text-green-500' : 'text-red-500'}">
+                        ${macdState}
+                    </span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">MA Trend</span>
+                    <span class="text-sm font-semibold" style="color: var(--color-text-primary);">${trendDirection}</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">Price vs 50-MA</span>
+                    <span class="text-sm font-semibold ${priceVsMAColor}">${priceVsMA > 0 ? '+' : ''}${priceVsMA}%</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">Volume Ratio</span>
+                    <span class="text-sm font-semibold" style="color: var(--color-text-primary);">${volumeRatio.toFixed(2)}x</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">ATR Volatility</span>
+                    <span class="text-sm font-semibold" style="color: var(--color-text-primary);">${atrPercent.toFixed(2)}%</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">Support</span>
+                    <span class="text-sm font-semibold text-green-500">${support.toFixed(2)}</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">Resistance</span>
+                    <span class="text-sm font-semibold text-red-500">${resistance.toFixed(2)}</span>
+                </div>
+                <div class="flex justify-between items-center p-3" style="background: rgba(15, 15, 15, 0.5); border: 1px solid var(--color-border);">
+                    <span class="text-sm" style="color: var(--color-text-muted);">BB Position</span>
+                    <span class="text-sm font-semibold" style="color: var(--color-text-primary);">
+                        ${currentPrice > middleBB ? (currentPrice > upperBB ? 'Above Upper' : 'Upper Half') : (currentPrice < lowerBB ? 'Below Lower' : 'Lower Half')}
+                    </span>
+                </div>
+            </div>
+        `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-red-400 text-sm">Error loading technical analysis</p>';
+            }
+        }
+
+        function calculateMACD(data, fastPeriod = 12, slowPeriod = 26, signalPeriod = 9) {
+            const emaFast = calculateEMA(data, fastPeriod);
+            const emaSlow = calculateEMA(data, slowPeriod);
+            const macd = emaFast.map((fast, i) => fast !== null && emaSlow[i] !== null ? fast - emaSlow[i] : null);
+            const signal = calculateEMA(macd.filter(v => v !== null), signalPeriod, true);
+            const histogram = macd.map((m, i) => m !== null && signal[i] !== null ? m - signal[i] : null);
+            return { macd, signal, histogram };
+        }
+
+        function calculateEMA(data, period, skipNulls = false) {
+            const k = 2 / (period + 1);
+            const result = [];
+            let ema = null;
+
+            for (let i = 0; i < data.length; i++) {
+                if (skipNulls && data[i] === null) {
+                    result.push(null);
+                    continue;
+                }
+                if (ema === null) {
+                    if (i >= period - 1) {
+                        const sum = data.slice(i - period + 1, i + 1).reduce((a, b) => a + (b || 0), 0);
+                        ema = sum / period;
+                    }
+                } else {
+                    ema = (data[i] - ema) * k + ema;
+                }
+                result.push(ema);
+            }
+            return result;
+        }
+
+        function calculateBollinger(data, period, stdDev) {
+            const sma = calculateSMA(data, period);
+            const upper = [];
+            const lower = [];
+
+            for (let i = 0; i < data.length; i++) {
+                if (i < period - 1 || sma[i] === null) {
+                    upper.push(null);
+                    lower.push(null);
+                } else {
+                    const slice = data.slice(i - period + 1, i + 1);
+                    const mean = sma[i];
+                    const variance = slice.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / period;
+                    const std = Math.sqrt(variance);
+                    upper.push(mean + stdDev * std);
+                    lower.push(mean - stdDev * std);
+                }
+            }
+            return { upper, middle: sma, lower };
+        }
+
+        function calculateATR(high, low, close, period) {
+            const tr = [];
+            for (let i = 1; i < high.length; i++) {
+                const hl = high[i] - low[i];
+                const hc = Math.abs(high[i] - close[i - 1]);
+                const lc = Math.abs(low[i] - close[i - 1]);
+                tr.push(Math.max(hl, hc, lc));
+            }
+
+            const atr = [null];
+            let atrValue = tr.slice(0, period).reduce((a, b) => a + b, 0) / period;
+            atr.push(atrValue);
+
+            for (let i = period; i < tr.length; i++) {
+                atrValue = ((atrValue * (period - 1)) + tr[i]) / period;
+                atr.push(atrValue);
+            }
+
+            return atr;
+        }
+
+        function setupEventListeners() {
+            document.getElementById('refresh-btn').addEventListener('click', () => {
+                if (currentStock) {
+                    const selectedCard = document.querySelector('.stock-card.selected');
+                    if (selectedCard) {
+                        selectStock(currentStock, selectedCard);
+                    }
+                }
+            });
+
+            document.getElementById('timeframe').addEventListener('change', () => {
+                if (currentStock) {
+                    loadStockData(currentStock);
+                }
+            });
+
+            document.addEventListener('click', (e) => {
+                const tooltip = document.getElementById('annotationTooltip');
+                const chartArea = document.getElementById('chart-canvas-container');
+                if (tooltip.classList.contains('show') &&
+                    !tooltip.contains(e.target) &&
+                    !chartArea.contains(e.target)) {
+                    closeTooltip();
+                }
+            });
+        }
+
+        window.addEventListener('load', initDashboard);
+    </script>
+</body>
+
+</html>

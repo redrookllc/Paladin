@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <title>Sign Up | Red Rook</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #000000;
+            --color-accent: #941107;
+            --color-accent-muted: #6b0d05;
+            --color-text-primary: #f5f5f5;
+            --color-text-secondary: #b8b8b8;
+            --color-text-muted: #7a7a7a;
+            --color-border: #2a2a2a;
+            --color-border-light: #1a1a1a;
+            --color-divider: #941107;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-body: 'Crimson Text', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-serif);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        .page-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            background:
+                radial-gradient(ellipse at top left, rgba(148, 17, 7, 0.03) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(148, 17, 7, 0.02) 0%, transparent 50%),
+                #0a0a0a;
+        }
+
+        .form-container {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--color-border);
+            box-shadow:
+                0 0 0 1px rgba(148, 17, 7, 0.1),
+                0 8px 32px rgba(0, 0, 0, 0.6);
+        }
+
+        .input-field {
+            background: rgba(15, 15, 15, 0.8);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            transition: all 0.2s ease;
+            font-family: var(--font-body);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--color-accent);
+            background: rgba(20, 20, 20, 0.9);
+            box-shadow: 0 0 0 1px rgba(148, 17, 7, 0.3);
+        }
+
+        .input-field::placeholder {
+            color: var(--color-text-muted);
+        }
+
+        .btn-primary {
+            background: var(--color-accent);
+            border: none;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            font-family: var(--font-serif);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-accent-muted);
+            box-shadow: 0 4px 16px rgba(148, 17, 7, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .social-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--color-border);
+            color: var(--color-text-primary);
+            transition: all 0.2s ease;
+            font-family: var(--font-body);
+        }
+
+        .social-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--color-accent);
+            color: var(--color-text-primary);
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: var(--color-text-muted);
+            font-style: italic;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .divider::before {
+            margin-right: 1rem;
+        }
+
+        .divider::after {
+            margin-left: 1rem;
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(148, 17, 7, 0.4);
+            background: rgba(148, 17, 7, 0.05);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 1.5px solid var(--color-border);
+            background: rgba(15, 15, 15, 0.8);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .checkbox:checked {
+            background: var(--color-accent);
+            border-color: var(--color-accent);
+        }
+
+        .checkbox:checked::after {
+            content: '✓';
+            display: block;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            line-height: 16px;
+        }
+
+        .error-message {
+            color: var(--color-accent);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+            font-style: italic;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(34, 139, 34, 0.1);
+            border: 1px solid rgba(34, 139, 34, 0.4);
+            color: #4ade80;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+            font-style: italic;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .legal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .legal-overlay.show {
+            display: flex;
+        }
+
+        .legal-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+
+        .legal-modal {
+            position: relative;
+            max-width: 48rem;
+            width: 100%;
+            max-height: 90vh;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.98) 0%, rgba(15, 15, 15, 0.95) 100%);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 0 0 1px rgba(148, 17, 7, 0.2), 0 16px 48px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .legal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+
+        .legal-content {
+            overflow-y: auto;
+            padding: 1.5rem;
+            flex: 1;
+        }
+
+        .legal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--color-border-light);
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .legal-link {
+            color: var(--color-accent);
+            cursor: pointer;
+            transition: opacity 0.2s;
+            text-decoration: underline;
+            text-decoration-color: rgba(148, 17, 7, 0.4);
+        }
+
+        .legal-link:hover {
+            text-decoration-color: var(--color-accent);
+            opacity: 0.8;
+        }
+
+        .brand-mark {
+            font-family: var(--font-serif);
+            letter-spacing: 0.15em;
+            color: var(--color-text-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+
+        .heading-accent {
+            color: var(--color-accent);
+            font-weight: 400;
+        }
+
+        .ornamental-line {
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--color-accent), transparent);
+            margin: 1.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-container">
+        <div class="w-full max-w-6xl grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+            <div class="hidden lg:block space-y-12">
+                <div class="space-y-6">
+                    <span class="brand-mark">Red Rook, LLC.</span>
+                    <div class="ornamental-line"></div>
+
+                    <h1 class="text-5xl font-light leading-tight" style="line-height: 1.2;">
+                        <span class="block" style="color: var(--color-text-secondary);">Introducing</span>
+                        <span class="block text-6xl font-semibold tracking-wide heading-accent"
+                            style="margin-top: 0.5rem;">PALADIN</span>
+                    </h1>
+
+                    <p class="max-w-xl text-lg leading-relaxed"
+                        style="font-size: 1.125rem; color: var(--color-text-secondary);">
+                        An advanced algorithm based trading AI assistant built for precise execution,
+                        pattern-recogition, advanced analytics, and strategic performance.
+                    </p>
+                </div>
+
+                <div class="space-y-8">
+                    <div class="flex items-start gap-5">
+                        <div class="feature-icon flex-shrink-0">
+                            <i class="fas fa-clock" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" style="color: var(--color-text-primary);">Strategic
+                                Timing.</h3>
+                            <p style="color: var(--color-text-secondary); font-size: 1rem;">Comprehensive trade analysis
+                                delivered in ~ 10 minutes for informed decision-making.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-5">
+                        <div class="feature-icon flex-shrink-0">
+                            <i class="fas fa-bullseye" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" style="color: var(--color-text-primary);">Pattern
+                                Recognition.</h3>
+                            <p style="color: var(--color-text-secondary); font-size: 1rem;">
+                                Analyzes entry and exit behaviors to minimize losses and improve portfolio returns.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-5">
+                        <div class="feature-icon flex-shrink-0">
+                            <i class="fas fa-gavel" style="color: var(--color-accent); font-size: 1.25rem;"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-semibold mb-2" style="color: var(--color-text-primary);">Complete
+                                Authority.</h3>
+                            <p style="color: var(--color-text-secondary); font-size: 1rem;">Evaluate volatility,
+                                anticipate market movements, assess trends, and execute with precision.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="form-container p-10 md:p-12">
+                <div class="mb-8 lg:hidden">
+                    <h1 class="text-3xl font-semibold mb-1" style="color: var(--color-text-primary);">
+                        RED ROOK <span class="heading-accent">LLC.</span>
+                    </h1>
+                </div>
+
+                <div class="mb-10">
+                    <h2 class="text-4xl font-semibold mb-3" id="formTitle" style="color: var(--color-text-primary);">
+                        Create Account</h2>
+                    <p style="color: var(--color-text-secondary); font-size: 1.125rem;" id="formSubtitle">Begin your
+                        journey with Paladin</p>
+                </div>
+
+                <div class="success-message" id="successMessage"></div>
+
+                <form id="authForm" class="space-y-6">
+                    <div id="signupFields">
+                        <div class="grid sm:grid-cols-2 gap-5 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2"
+                                    style="color: var(--color-text-secondary);">First Name</label>
+                                <input type="text" name="firstName" id="firstName" class="input-field w-full px-4 py-3"
+                                    placeholder="Tyler" style="font-size: 1rem;" />
+                                <div class="error-message" id="firstNameError"></div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2"
+                                    style="color: var(--color-text-secondary);">Last Name</label>
+                                <input type="text" name="lastName" id="lastName" class="input-field w-full px-4 py-3"
+                                    placeholder="Schiatelli" style="font-size: 1rem;" />
+                                <div class="error-message" id="lastNameError"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2" style="color: var(--color-text-secondary);">Email
+                            Address</label>
+                        <input type="email" name="email" id="email" class="input-field w-full px-4 py-3"
+                            placeholder="tschiatelli@gmail.com" style="font-size: 1rem;" />
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-2"
+                            style="color: var(--color-text-secondary);">Password</label>
+                        <input type="password" name="password" id="password" class="input-field w-full px-4 py-3"
+                            placeholder="••••••••" style="font-size: 1rem;" />
+                        <p class="text-xs mt-2" style="color: var(--color-text-muted); font-style: italic;">Minimum
+                            eight characters required</p>
+                        <div class="error-message" id="passwordError"></div>
+                    </div>
+
+                    <div id="termsField" class="flex items-start gap-3">
+                        <input type="checkbox" id="terms" class="checkbox mt-1">
+                        <label for="terms" class="text-sm" style="color: var(--color-text-secondary);">
+                            I agree to the
+                            <span class="legal-link" onclick="openLegal('terms')">Terms of Service</span>
+                            and
+                            <span class="legal-link" onclick="openLegal('privacy')">Privacy Policy</span>
+                        </label>
+                    </div>
+                    <div class="error-message" id="termsError"></div>
+
+                    <button type="submit" id="submitBtn" class="btn-primary w-full py-4">
+                        Create Account
+                    </button>
+
+                    <div class="divider text-sm" style="margin: 2rem 0;">or continue with</div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <button type="button" id="googleSignIn"
+                            class="social-btn py-3 flex items-center justify-center gap-2">
+                            <i class="fab fa-google"></i>
+                        </button>
+                        <button type="button" id="appleSignIn"
+                            class="social-btn py-3 flex items-center justify-center gap-2">
+                            <i class="fab fa-apple"></i>
+                        </button>
+                    </div>
+
+                    <p class="text-center text-sm pt-6" style="color: var(--color-text-muted);">
+                        <span id="toggleText">Already have an account?</span>
+                        <a href="#signin" id="toggleMode" class="font-semibold ml-1"
+                            style="color: var(--color-accent); text-decoration: underline; text-decoration-color: rgba(139, 0, 0, 0.3);">Sign
+                            In</a>
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="legal-overlay" id="legalOverlay">
+        <div class="legal-backdrop" onclick="closeLegal()"></div>
+        <div class="legal-modal">
+            <div class="legal-header">
+                <h3 style="color: var(--color-text-primary); font-family: var(--font-serif); font-size: 1.25rem; font-weight: 600;"
+                    id="legalTitle"></h3>
+                <button onclick="closeLegal()"
+                    style="color: var(--color-text-muted); font-size: 1.5rem; background: none; border: none; cursor: pointer;">×</button>
+            </div>
+            <div class="legal-content" id="legalContent"></div>
+            <div class="legal-footer">
+                <button onclick="closeLegal()" class="px-8 py-3 btn-primary">
+                    I Have Read and Understood
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isSignUpMode = true;
+        let users = [];
+
+        const legalContent = {
+            terms: `
+                <h2 class="text-3xl font-semibold mb-6" style="font-family: var(--font-serif); color: var(--color-text-primary);">Terms of Service</h2>
+                <p class="mb-8" style="color: var(--color-text-muted); font-style: italic;">Last Updated: April 11, 2026</p>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">1. Acceptance of Terms</h3>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        By accessing or using Red Rook, LLC.'s Paladin trading bot, you agree to be bound by these Terms of Service. If you disagree with any part of these terms, you may not access the Service.
+                    </p>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">2. Description of Service</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        Red Rook, LLC. provides AI-generated market analysis, trend assessment, and trading signals. The Service is an informational tool designed to assist users in making trading decisions.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <li>Real-time market data processing.</li>
+                        <li>Pattern recognition and technical indicators.</li>
+                        <li>Buy/Sell/Hold signals.</li>
+                        <li>Risk assessment metrics.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">3. Disclaimer: Not Financial Advice</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <strong style="color: var(--color-accent);">IMPORTANT:</strong> The content provided by Paladin is for <strong>informational and educational purposes only</strong>. It is not financial advice, investment advice, or a recommendation to buy or sell any security.
+                    </p>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        Trading involves significant risk of loss. You acknowledge that you are solely responsible for your own trading decisions and investment strategies. Red Rook, LLC. assumes no liability for any financial losses, lost profits, or damages arising from your use of the Service.
+                    </p>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">4. User Accounts and Security</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        You are responsible for maintaining the confidentiality of your account credentials. You agree to notify us immediately of any unauthorized use of your account.
+                    </p>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        Any use of the Service by you is solely at your own risk. We are not liable for any loss or damage arising from your failure to maintain the security of your account.
+                    </p>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">5. Limitation of Liability</h3>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        To the fullest extent permitted by law, Red Rook, LLC., its directors, employees, partners, agents, or affiliates, shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from your use or inability to use the service.
+                    </p>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">6. Termination</h3>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        We may terminate or suspend your access to the Service immediately, without prior notice or liability, for any reason whatsoever, including without limitation if you breach the Terms of Service.
+                    </p>
+                </section>
+            `,
+            privacy: `
+                <h2 class="text-3xl font-semibold mb-6" style="font-family: var(--font-serif); color: var(--color-text-primary);">Privacy Policy</h2>
+                <p class="mb-8" style="color: var(--color-text-muted); font-style: italic;">Last Updated: April 11, 2026</p>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">1. Introduction</h3>
+                    <p style="color: var(--color-text-secondary); line-height: 1.8;">
+                        Red Rook, LLC. respects your privacy and is committed to protecting your personal data. This Privacy Policy explains how we collect, use, and safeguard your information when you use our AI trading bot services.
+                    </p>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">2. Data Collection</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">We collect the following types of information:</p>
+                    <ul class="list-disc pl-6 space-y-3" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <li>
+                            <span style="font-weight: 600;">Account Information:</span>
+                            Name, email address, and password provided during registration.
+                        </li>
+                        <li>
+                            <span style="font-weight: 600;">Usage Data:</span>
+                            Logs of your interactions with the Service, such as signals viewed, stocks monitored, and timestamps.
+                        </li>
+                        <li>
+                            <span style="font-weight: 600;">API Keys:</span>
+                            If you connect third-party brokerage APIs, we securely store the necessary keys to execute trades.
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">3. Use of Your Information</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        We use your information to provide, maintain, and improve our AI trading analysis services. Specifically:
+                    </p>
+                    <div class="p-6 mb-4" style="background: rgba(139, 0, 0, 0.03); border: 1px solid rgba(139, 0, 0, 0.1);">
+                        <h4 class="text-lg font-semibold mb-2" style="font-family: var(--font-serif); color: var(--color-text-primary);">AI Processing</h4>
+                        <p style="color: var(--color-text-secondary); font-size: 0.95rem; line-height: 1.8;">
+                            Your market preferences and monitored stocks are used by our algorithms to generate personalized buy/sell signals and trend assessments.
+                        </p>
+                    </div>
+                    <div class="p-6" style="background: rgba(139, 0, 0, 0.03); border: 1px solid rgba(139, 0, 0, 0.1);">
+                        <h4 class="text-lg font-semibold mb-2" style="font-family: var(--font-serif); color: var(--color-text-primary);">Security & Authentication</h4>
+                        <p style="color: var(--color-text-secondary); font-size: 0.95rem; line-height: 1.8;">
+                            We use your email and API keys to authenticate your account and secure your connections to external exchanges.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">4. Data Security</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        We implement standard security measures to protect your data against unauthorized access, alteration, disclosure, or erasure.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <li><strong>Encryption:</strong> All passwords and API keys are stored using AES-256 encryption.</li>
+                        <li><strong>Transmission:</strong> Data is transmitted over secure HTTPS/TLS 1.2 connections.</li>
+                        <li><strong>Access Control:</strong> Multi-factor authentication (Google) is available and recommended.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">5. Data Sharing</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        We do not sell your personal data to third parties. We may share your data only in the following circumstances:
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <li><strong>Service Providers:</strong> With trusted partners solely for the purpose of enabling the Service.</li>
+                        <li><strong>Legal Requirements:</strong> If required to do so by law or in response to valid requests by public authorities.</li>
+                    </ul>
+                </section>
+
+                <section class="mb-10">
+                    <h3 class="text-xl font-semibold mb-4" style="font-family: var(--font-serif); color: var(--color-text-primary);">6. Your Rights</h3>
+                    <p class="mb-4" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        You have the right to access, update, or delete your personal information at any time.
+                    </p>
+                    <ul class="list-disc pl-6 space-y-2" style="color: var(--color-text-secondary); line-height: 1.8;">
+                        <li>Update account settings via your user dashboard.</li>
+                        <li>Delete your account by contacting our support team.</li>
+                        <li>Opt-out of marketing communications.</li>
+                        <li>Revoke access to third-party API keys.</li>
+                    </ul>
+                </section>
+            `
+        };
+
+        function openLegal(type) {
+            const overlay = document.getElementById('legalOverlay');
+            const title = document.getElementById('legalTitle');
+            const content = document.getElementById('legalContent');
+
+            title.textContent = type === 'terms' ? 'Terms of Service' : 'Privacy Policy';
+            content.innerHTML = legalContent[type];
+            overlay.classList.add('show');
+        }
+
+        function closeLegal() {
+            document.getElementById('legalOverlay').classList.remove('show');
+        }
+
+        function showError(fieldId, message) {
+            const errorEl = document.getElementById(fieldId + 'Error');
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.add('show');
+            }
+        }
+
+        function clearErrors() {
+            document.querySelectorAll('.error-message').forEach(el => {
+                el.classList.remove('show');
+                el.textContent = '';
+            });
+        }
+
+        function showSuccess(message) {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.textContent = message;
+            successMessage.classList.add('show');
+            setTimeout(() => {
+                successMessage.classList.remove('show');
+            }, 5000);
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function validatePassword(password) {
+            return password.length >= 8;
+        }
+
+        document.getElementById('toggleMode').addEventListener('click', function (e) {
+            e.preventDefault();
+            isSignUpMode = !isSignUpMode;
+            clearErrors();
+            document.getElementById('successMessage').classList.remove('show');
+
+            const formTitle = document.getElementById('formTitle');
+            const formSubtitle = document.getElementById('formSubtitle');
+            const submitBtn = document.getElementById('submitBtn');
+            const toggleText = document.getElementById('toggleText');
+            const toggleMode = document.getElementById('toggleMode');
+            const signupFields = document.getElementById('signupFields');
+            const termsField = document.getElementById('termsField');
+
+            if (isSignUpMode) {
+                formTitle.textContent = 'Create Account';
+                formSubtitle.textContent = 'Begin your journey with Paladin';
+                submitBtn.textContent = 'Create Account';
+                toggleText.textContent = 'Already have an account?';
+                toggleMode.textContent = 'Sign In';
+                signupFields.style.display = 'block';
+                termsField.style.display = 'flex';
+            } else {
+                formTitle.textContent = 'Welcome Back';
+                formSubtitle.textContent = 'Continue your trading journey';
+                submitBtn.textContent = 'Sign In';
+                toggleText.textContent = "Don't have an account?";
+                toggleMode.textContent = 'Sign Up';
+                signupFields.style.display = 'none';
+                termsField.style.display = 'none';
+            }
+        });
+
+        document.getElementById('authForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            clearErrors();
+
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+
+            let isValid = true;
+
+            if (!email) {
+                showError('email', 'Email is required');
+                isValid = false;
+            } else if (!validateEmail(email)) {
+                showError('email', 'Please enter a valid email');
+                isValid = false;
+            }
+
+            if (!password) {
+                showError('password', 'Password is required');
+                isValid = false;
+            } else if (!validatePassword(password)) {
+                showError('password', 'Password must be at least 8 characters');
+                isValid = false;
+            }
+
+            if (isSignUpMode) {
+                const firstName = document.getElementById('firstName').value.trim();
+                const lastName = document.getElementById('lastName').value.trim();
+                const terms = document.getElementById('terms').checked;
+
+                if (!firstName) {
+                    showError('firstName', 'First name is required');
+                    isValid = false;
+                }
+
+                if (!lastName) {
+                    showError('lastName', 'Last name is required');
+                    isValid = false;
+                }
+
+                if (!terms) {
+                    showError('terms', 'You must read and accept the terms.');
+                    isValid = false;
+                }
+
+                if (!isValid) return;
+
+                const existingUser = users.find(u => u.email === email);
+                if (existingUser) {
+                    showError('email', 'Email already registered');
+                    return;
+                }
+
+                const newUser = {
+                    id: Date.now(),
+                    firstName,
+                    lastName,
+                    email,
+                    password,
+                    createdAt: new Date().toISOString()
+                };
+
+                users.push(newUser);
+
+                showSuccess(`Welcome ${firstName}! Your account has been created successfully.`);
+                document.getElementById('authForm').reset();
+
+                setTimeout(() => {
+                    console.log('Account created:', newUser);
+                }, 2000);
+
+            } else {
+                if (!isValid) return;
+
+                const user = users.find(u => u.email === email && u.password === password);
+
+                if (!user) {
+                    showError('email', 'Invalid email or password');
+                    return;
+                }
+
+                showSuccess(`Welcome back, ${user.firstName}!`);
+
+                setTimeout(() => {
+                    window.location.href = '../Account/dashboard.html';
+                }, 2000);
+
+                setTimeout(() => {
+                    console.log('User logged in:', user);
+                }, 2000);
+            }
+        });
+
+        document.getElementById('googleSignIn').addEventListener('click', function () {
+            const clientId = '813296049367-i4ovn235jk4ecbhb8uflabgbfqm49hu3.apps.googleusercontent.com';
+
+            const initializeGoogle = () => {
+                if (typeof google === 'undefined' || !google.accounts) {
+                    showError('email', 'Google Sign In is not loaded. Please refresh the page.');
+                    return;
+                }
+
+                const parent = document.createElement('div');
+                parent.style.position = 'fixed';
+                parent.style.top = '50%';
+                parent.style.left = '50%';
+                parent.style.transform = 'translate(-50%, -50%)';
+                parent.style.zIndex = '10001';
+                parent.id = 'g_id_onload_container';
+
+                const backdrop = document.createElement('div');
+                backdrop.style.position = 'fixed';
+                backdrop.style.top = '0';
+                backdrop.style.left = '0';
+                backdrop.style.width = '100%';
+                backdrop.style.height = '100%';
+                backdrop.style.backgroundColor = 'rgba(0,0,0,0.5)';
+                backdrop.style.zIndex = '10000';
+                backdrop.id = 'google-signin-backdrop';
+                backdrop.onclick = function () {
+                    if (parent.parentNode) document.body.removeChild(parent);
+                    if (backdrop.parentNode) document.body.removeChild(backdrop);
+                };
+
+                document.body.appendChild(backdrop);
+                document.body.appendChild(parent);
+
+                google.accounts.id.initialize({
+                    client_id: clientId,
+                    callback: handleGoogleSignIn,
+                    auto_select: false,
+                    cancel_on_tap_outside: false
+                });
+
+                google.accounts.id.renderButton(parent, {
+                    type: 'standard',
+                    theme: 'outline',
+                    size: 'large',
+                    text: 'continue_with',
+                    shape: 'rectangular',
+                    logo_alignment: 'left',
+                    width: 400
+                });
+
+                const button = parent.querySelector('[role="button"]');
+                if (button) {
+                    button.click();
+                }
+            };
+
+            if (typeof google !== 'undefined' && google.accounts) {
+                initializeGoogle();
+            } else {
+                let attempts = 0;
+                const checkInterval = setInterval(() => {
+                    attempts++;
+                    if (typeof google !== 'undefined' && google.accounts) {
+                        clearInterval(checkInterval);
+                        initializeGoogle();
+                    } else if (attempts > 20) {
+                        clearInterval(checkInterval);
+                        showError('email', 'Google Sign In failed to load. Please refresh the page.');
+                    }
+                }, 100);
+            }
+        });
+
+        function handleGoogleSignIn(response) {
+            const backdrop = document.getElementById('google-signin-backdrop');
+            const container = document.getElementById('g_id_onload_container');
+            if (backdrop && backdrop.parentNode) document.body.removeChild(backdrop);
+            if (container && container.parentNode) document.body.removeChild(container);
+
+            const userObject = parseJwt(response.credential);
+
+            const userData = {
+                id: Date.now(),
+                email: userObject.email,
+                firstName: userObject.given_name,
+                lastName: userObject.family_name,
+                provider: 'google',
+                createdAt: new Date().toISOString()
+            };
+
+            const existingUser = users.find(u => u.email === userData.email);
+            if (!existingUser) {
+                users.push(userData);
+            }
+
+            showSuccess(`Welcome ${userData.firstName}!`);
+
+            setTimeout(() => {
+                console.log('Google user authenticated:', userData);
+            }, 2000);
+        }
+
+        function parseJwt(token) {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+
+            return JSON.parse(jsonPayload);
+        }
+
+        document.getElementById('appleSignIn').addEventListener('click', function () {
+            if (typeof AppleID === 'undefined') {
+                showError('email', 'Apple Sign In is not configured. Please use email registration.');
+                return;
+            }
+
+            try {
+                AppleID.auth.init({
+                    clientId: 'YOUR_APPLE_CLIENT_ID',
+                    scope: 'name email',
+                    redirectURI: window.location.origin,
+                    state: 'origin:web',
+                    usePopup: true
+                });
+
+                AppleID.auth.signIn();
+            } catch (error) {
+                console.error('Apple Sign In error:', error);
+                showError('email', 'Apple Sign In failed. Please use email registration.');
+            }
+        });
+
+        document.addEventListener('AppleIDSignInOnSuccess', (event) => {
+            const { authorization, user } = event.detail;
+
+            const userData = {
+                id: Date.now(),
+                email: user?.email || 'apple_user_' + Date.now() + '@privaterelay.appleid.com',
+                firstName: user?.name?.firstName || 'Apple',
+                lastName: user?.name?.lastName || 'User',
+                provider: 'apple',
+                createdAt: new Date().toISOString()
+            };
+
+            const existingUser = users.find(u => u.email === userData.email);
+            if (!existingUser) {
+                users.push(userData);
+            }
+
+            showSuccess(`Welcome ${userData.firstName}!`);
+
+            setTimeout(() => {
+                console.log('Apple user authenticated:', userData);
+            }, 2000);
+        });
+
+        document.addEventListener('AppleIDSignInOnFailure', (event) => {
+            console.error('Apple Sign In failed:', event.detail.error);
+            showError('email', 'Apple Sign In failed. Please try again or use email registration.');
+        });
+    </script>
+</body>
+
+</html>

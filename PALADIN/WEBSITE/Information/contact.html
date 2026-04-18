@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact & Inquiry | Red Rook, LLC.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #000000;
+            --accent: #941107;
+            --accent-bright: #b81510;
+            --text: #f5f5f5;
+            --text-muted: #7a7a7a;
+            --border: #2a2a2a;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-body: 'Crimson Text', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 600; letter-spacing: 0.02em; }
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+        .container { width: 90%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .bg-particle {
+            position: absolute;
+            background: var(--accent);
+            border-radius: 50%;
+            opacity: 0.03;
+            animation: float 25s infinite ease-in-out;
+        }
+
+        .bg-particle:nth-child(1) { width: 400px; height: 400px; left: 10%; top: 20%; animation-delay: 0s; }
+        .bg-particle:nth-child(2) { width: 300px; height: 300px; right: 15%; top: 40%; animation-delay: 5s; }
+        .bg-particle:nth-child(3) { width: 200px; height: 200px; left: 70%; bottom: 30%; animation-delay: 10s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(0, -50px) scale(1); }
+            75% { transform: translate(-30px, -30px) scale(0.95); }
+        }
+
+        header {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(42, 42, 42, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled { padding: 15px 0; background: rgba(10, 10, 10, 0.98); box-shadow: 0 4px 20px rgba(148, 17, 7, 0.1); }
+
+        nav { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .logo:hover { color: var(--text); text-shadow: 0 0 20px rgba(148, 17, 7, 0.3); }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+
+        .nav-links a {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            position: relative;
+            padding: 8px 0;
+        }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a:hover::before, .nav-links a.active::before { width: 100%; }
+
+        .mobile-menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; padding: 10px; }
+        .mobile-menu-toggle span { width: 25px; height: 2px; background: var(--text-muted); transition: all 0.3s ease; }
+
+        .page-section {
+            padding: 160px 0 80px;
+            background: radial-gradient(ellipse at top left, rgba(148, 17, 7, 0.04) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(148, 17, 7, 0.03) 0%, transparent 50%), var(--bg);
+            min-height: 100vh;
+        }
+
+        .section-header { text-align: center; margin-bottom: 80px; }
+
+        .brand-mark {
+            font-family: var(--font-serif);
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ornamental-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 2rem auto;
+            position: relative;
+            animation: expandLine 1s ease;
+        }
+
+        .ornamental-line::before, .ornamental-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ornamental-line::before { left: -10px; }
+        .ornamental-line::after { right: -10px; }
+        @keyframes expandLine { from { width: 0; opacity: 0; } to { width: 80px; opacity: 1; } }
+
+        .section-header h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, var(--text) 0%, #b8b8b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-header p { color: #b8b8b8; font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 80px;
+            align-items: start;
+        }
+
+        .contact-info {
+            position: relative;
+            padding: 40px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+        }
+
+        .contact-info::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .info-block { margin-bottom: 40px; }
+
+        .info-block h3 {
+            font-size: 1.4rem;
+            color: var(--text);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-block h3 i {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .info-block p { color: var(--text-muted); font-size: 1rem; line-height: 1.8; }
+        .info-block a { color: var(--text-muted); }
+        .info-block a:hover { color: var(--accent); }
+
+        .social-links { display: flex; gap: 15px; margin-top: 30px; }
+
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: rgba(148, 17, 7, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .contact-form-wrapper {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+            padding: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form-wrapper::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(148, 17, 7, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .form-group { margin-bottom: 25px; position: relative; z-index: 1; }
+        .form-group.full-width { grid-column: span 2; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(10, 10, 10, 0.8);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: var(--accent);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(148, 17, 7, 0.1);
+        }
+
+        .form-group input::placeholder, .form-group textarea::placeholder { color: var(--text-muted); opacity: 0.5; }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237a7a7a' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 20px center;
+            cursor: pointer;
+        }
+
+        .form-group textarea { min-height: 150px; resize: vertical; }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-bright) 100%);
+            border: none;
+            color: var(--text);
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-submit:hover::before { left: 100%; }
+        .btn-submit:hover { transform: translateY(-3px); box-shadow: 0 15px 40px rgba(148, 17, 7, 0.3); }
+
+        .map-section {
+            margin-top: 100px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+            padding: 60px;
+        }
+
+        .map-placeholder {
+            height: 400px;
+            background: rgba(10, 10, 10, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-placeholder::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(148, 17, 7, 0.08) 0%, transparent 70%);
+            animation: pulse 4s infinite ease-in-out;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); } }
+
+        .map-placeholder i { font-size: 4rem; color: var(--accent); opacity: 0.5; position: relative; z-index: 1; }
+
+        footer {
+            background: var(--surface);
+            padding: 80px 0;
+            border-top: 1px solid rgba(26, 26, 26, 1);
+        }
+
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-brand h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--text); }
+        .footer-brand p { color: var(--text-muted); line-height: 1.8; margin-bottom: 25px; }
+
+        .footer-section h4 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text); margin-bottom: 25px; }
+        .footer-links { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { color: var(--text-muted); font-size: 0.9rem; transition: all 0.2s ease; display: inline-block; }
+        .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+
+        .footer-bottom { padding-top: 40px; border-top: 1px solid rgba(26, 26, 26, 1); text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+        .scroll-progress { position: fixed; top: 0; left: 0; width: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); z-index: 10000; transition: width 0.1s ease; }
+
+        @media (max-width: 1024px) {
+            .contact-grid { grid-template-columns: 1fr; gap: 50px; }
+            .section-header h1 { font-size: 3rem; }
+            .footer-content { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .section-header h1 { font-size: 2.5rem; }
+            .form-grid { grid-template-columns: 1fr; }
+            .form-group.full-width { grid-column: span 1; }
+            .contact-form-wrapper { padding: 40px 30px; }
+            .footer-content { grid-template-columns: 1fr; }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(30px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 40px 20px;
+                transition: left 0.3s ease;
+                border-right: 1px solid var(--border);
+            }
+
+            .nav-links.active { left: 0; }
+            .nav-links a { font-size: 1.2rem; padding: 15px 0; width: 100%; text-align: center; }
+            .mobile-menu-toggle { display: flex; }
+            .mobile-menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
+            .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
+            .mobile-menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
+        }
+
+        @media (max-width: 480px) {
+            .section-header h1 { font-size: 2rem; }
+            .contact-info { padding: 30px 20px; }
+            .map-section { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="scroll-progress"></div>
+
+    <div class="animated-bg">
+        <div class="bg-particle"></div>
+        <div class="bg-particle"></div>
+        <div class="bg-particle"></div>
+    </div>
+
+    <header>
+        <div class="container">
+        </div>
+    </header>
+
+    <main>
+        <section class="page-section">
+            <div class="container">
+                <div class="section-header">
+                    <span class="brand-mark">Red Rook, LLC.</span>
+                    <div class="ornamental-line"></div>
+                    <h1>Establish Contact</h1>
+                    <p>Engage with our strategic team. Whether for tactical inquiries, enterprise solutions, or strategic partnerships.</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info">
+                        <div class="info-block">
+                            <h3><i class="fas fa-envelope"></i> Electronic Mail</h3>
+                            <p><a href="mailto:inquiry@rookai.com">inquiry@rookai.com</a></p>
+                            <p><a href="mailto:support@redrook.com">support@redrook.com</a></p>
+                        </div>
+
+                        <div class="info-block">
+                            <h3><i class="fas fa-clock"></i> Operational Hours</h3>
+                            <p>Monday – Friday: 0900 – 1800 EST</p>
+                            <p>Global Support: 24/7 Priority</p>
+                        </div>
+
+                        <div class="info-block">
+                            <h3><i class="fas fa-map-marker-alt"></i> Headquarters</h3>
+                            <p>Financial District, New York City</p>
+                            <p>United States</p>
+                        </div>
+
+                        <div class="social-links">
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                            <a href="#" aria-label="Medium"><i class="fab fa-medium-m"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="contact-form-wrapper">
+                        <form id="contact-form">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="name">Full Name</label>
+                                    <input type="text" id="name" placeholder="Name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address</label>
+                                    <input type="email" id="email" placeholder="email@domain.com" required>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="inquiry-type">Inquiry Category</label>
+                                    <select id="inquiry-type" required>
+                                        <option value="" disabled selected>Select Inquiry Type</option>
+                                        <option>General Inquiry</option>
+                                        <option>Sales & Pricing</option>
+                                        <option>Technical Support</option>
+                                        <option>Partnership Opportunities</option>
+                                        <option>Enterprise Solutions</option>
+                                        <option>Press & Media</option>
+                                    </select>
+                                </div>
+                                <div class="form-group full-width">
+                                    <label for="message">Your Message</label>
+                                    <textarea id="message" placeholder="Describe your inquiry..." required></textarea>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-submit">Send Inquiry</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>RED ROOK, LLC.</h3>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about_us.html">About Us</a>
+                        <a href="#careers">Careers</a>
+                        <a href="#press">Press Kit</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#documentation">Documentation</a>
+                        <a href="#api">API Reference</a>
+                        <a href="#support">Support Center</a>
+                        <a href="#blog">Blog</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Red Rook, LLC. All rights reserved. | <a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a> | <a href="#security">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const header = document.querySelector('header');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 100) { header.classList.add('scrolled'); } else { header.classList.remove('scrolled'); }
+        });
+
+        const scrollProgress = document.querySelector('.scroll-progress');
+        window.addEventListener('scroll', () => {
+            const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            scrollProgress.style.width = (window.pageYOffset / scrollTotal) * 100 + '%';
+        });
+
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        mobileMenuToggle.addEventListener('click', () => { mobileMenuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => { mobileMenuToggle.classList.remove('active'); navLinks.classList.remove('active'); });
+        });
+
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.contact-info, .contact-form-wrapper, .map-section').forEach(el => {
+            el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const btn = this.querySelector('.btn-submit');
+            const originalText = btn.textContent;
+            btn.textContent = 'Transmitting...';
+            btn.style.background = '#333';
+            
+            setTimeout(() => {
+                btn.textContent = 'Message Sent';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    this.reset();
+                }, 2000);
+            }, 1500);
+        });
+
+        document.querySelectorAll('input, textarea, select').forEach(el => {
+            el.addEventListener('focus', function() { this.parentElement.style.transform = 'scale(1.02)'; });
+            el.addEventListener('blur', function() { this.parentElement.style.transform = 'scale(1)'; });
+        });
+    </script>
+
+</body>
+</html>

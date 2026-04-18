@@ -1,0 +1,21 @@
+# All dependencies for the Paladin project are listed here. Make sure to install them using pip before running the application.
+# You can install all dependencies at once by running:
+# pip install -r requirements.txt.
+# Please note that these versions are specifically for python 3.11. If you are using a different version of python, you may need to adjust the versions of the dependencies accordingly.
+
+flask>=3.0
+flask-cors>=4.0
+yfinance>=0.2.40
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.4
+joblib>=1.3
+xgboost>=2.0
+matplotlib>=3.7
+plotly>=5.17
+PyQt5>=5.15
+# qtawesome>=1.2
+talib-binary>=0.4.28 ; platform_system != "Windows"
+TA-Lib>=0.4.28 ; platform_system == "Windows"
+gpt4all>=2.7
+# MetaTrader5>=5.0 / Optional, only if you want to use MetaTrader5 integration. 

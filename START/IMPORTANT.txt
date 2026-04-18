@@ -1,0 +1,41 @@
+READ ME FIRST!
+
+It's important that you understand primarily that after installing python 3.11, that you must create a virtual environment.
+If you've noticed, you'll see a path to "class", which was the user this laptop compiled all necessary packages and paths to.
+Please ensure that you create a virtual environment with this command:
+
+py -3.11 -m venv red_trader
+
+After you've created the necessary environment, go ahead and head to activate the red_trader environment.
+If you are on Windows, simply expand the red_trader folder, Scripts, then Activate.ps1 to your terminal in Visual Studio Code.
+To get a quick terminal, simply hold Ctrl+`.
+
+After doing these steps, change your directory to cd "RED TRADER".
+Then, run this command:
+
+pip install -r requirements.txt
+
+Once you have ran this command, run the next to begin the setup:
+
+python setup.py
+
+The setup will run as expected, and will download all dependencies & libraries to your red_trader virtual environment.
+You'll notice a couple of files (and those included in "WEBSITE" folder):
+
+(brains.py, data4.json, main.py, contact.html, about_us.html, signup.html, dashboard.html)
+
+The "WEBSITE" folder is primarily for the user to have a mockup visualizer of what a website would look like.
+brains.py contains the logic necessary for Red Trader to "think" and data analyze many things.
+data4.json should not be altered unless user has a file of data training specific to training.
+main.py contains the GUI code and many other logic handling and calculatoions.
+contact.html, about_us.html, signup.html, dashboard.html - back to main point.
+
+After you've ran setup.py successfully and downloaded all dependencies, changed paths, and trained the model (with setup.py), you will run the main file.
+The main file can be executed by:
+
+python main.py
+
+Following this, the user recieves a "setup wizard", which allows the user to customize their profile according to their liking.
+When the setup wizard has been completed, the user will recieve a layout of a chart, with other feautres.
+The next part is customizable and self explanatory.
+Stocks will be displayed: both in the dropdown menu and watchlist.

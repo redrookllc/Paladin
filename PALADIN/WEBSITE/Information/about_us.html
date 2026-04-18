@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Red Rook, LLC.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #000000;
+            --accent: #941107;
+            --accent-bright: #b81510;
+            --text: #f5f5f5;
+            --text-muted: #7a7a7a;
+            --border: #2a2a2a;
+            --font-serif: 'Cormorant Garamond', serif;
+            --font-body: 'Crimson Text', serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 600; letter-spacing: 0.02em; }
+
+        a { text-decoration: none; color: inherit; transition: all 0.3s ease; }
+        ul { list-style: none; }
+        img { max-width: 100%; display: block; }
+
+        .container { width: 90%; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+        .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; pointer-events: none; }
+
+        .chess-piece {
+            position: absolute;
+            opacity: 0.02;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .chess-piece:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; }
+        .chess-piece:nth-child(2) { right: 15%; top: 40%; animation-delay: 5s; }
+        .chess-piece:nth-child(3) { left: 70%; bottom: 30%; animation-delay: 10s; }
+        .chess-piece:nth-child(4) { right: 60%; top: 60%; animation-delay: 15s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+        }
+
+        header {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(42, 42, 42, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled { padding: 15px 0; background: rgba(10, 10, 10, 0.98); box-shadow: 0 4px 20px rgba(148, 17, 7, 0.1); }
+
+        nav { display: flex; justify-content: space-between; align-items: center; }
+
+        .logo {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .logo:hover { color: var(--text); text-shadow: 0 0 20px rgba(148, 17, 7, 0.3); }
+        .logo span { color: var(--accent); }
+
+        .nav-links { display: flex; gap: 32px; align-items: center; }
+
+        .nav-links a { font-size: 0.9rem; color: var(--text-muted); font-weight: 500; position: relative; padding: 8px 0; }
+
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a:hover::before, .nav-links a.active::before { width: 100%; }
+
+        .page-section {
+            padding: 160px 0 80px;
+            background: radial-gradient(ellipse at top left, rgba(148, 17, 7, 0.04) 0%, transparent 50%), radial-gradient(ellipse at bottom right, rgba(148, 17, 7, 0.03) 0%, transparent 50%), var(--bg);
+        }
+
+        .brand-mark {
+            font-family: var(--font-serif);
+            letter-spacing: 0.2em;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: block;
+            margin-bottom: 1rem;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .ornamental-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            margin: 2rem auto;
+            position: relative;
+            animation: expandLine 1s ease;
+        }
+
+        .ornamental-line::before, .ornamental-line::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translateY(-50%);
+        }
+
+        .ornamental-line::before { left: -10px; }
+        .ornamental-line::after { right: -10px; }
+
+        @keyframes expandLine { from { width: 0; opacity: 0; } to { width: 80px; opacity: 1; } }
+
+        .hero-text { text-align: center; max-width: 900px; margin: 0 auto 120px; }
+
+        .hero-text h1 {
+            font-size: 4.5rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            line-height: 1.1;
+            animation: fadeInUp 1s ease;
+            background: linear-gradient(135deg, var(--text) 0%, #b8b8b8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .hero-text .heading-accent {
+            color: var(--accent);
+            font-weight: 400;
+            display: inline-block;
+            position: relative;
+            -webkit-text-fill-color: var(--accent);
+        }
+
+        .hero-text .heading-accent::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            animation: glowPulse 2s infinite ease-in-out;
+        }
+
+        @keyframes glowPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px var(--accent); } }
+
+        .hero-text p { color: #b8b8b8; font-size: 1.25rem; line-height: 1.9; animation: fadeInUp 1.2s ease; max-width: 800px; margin: 0 auto; }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin: 80px 0 120px;
+            padding: 60px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .stats-bar::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(148, 17, 7, 0.05) 0%, transparent 70%); }
+        .stat-item { text-align: center; position: relative; z-index: 1; }
+        .stat-number { font-size: 3.5rem; font-family: var(--font-serif); font-weight: 600; color: var(--accent); margin-bottom: 10px; display: block; line-height: 1; }
+        .stat-label { font-size: 0.9rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; }
+
+        .stat-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: -15px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 1px;
+            height: 60%;
+            background: linear-gradient(180deg, transparent, var(--border), transparent);
+        }
+
+        .mission-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 100px; align-items: center; margin-bottom: 140px; }
+
+        .mission-content { position: relative; padding: 40px 0; }
+
+        .mission-content::before {
+            content: '"';
+            position: absolute;
+            left: -60px;
+            top: 0;
+            font-size: 180px;
+            font-family: var(--font-serif);
+            color: var(--accent);
+            opacity: 0.1;
+            line-height: 1;
+        }
+
+        .mission-content h2 { font-size: 3rem; margin-bottom: 40px; color: var(--text); position: relative; display: inline-block; }
+        .mission-content h2::after { content: ''; position: absolute; bottom: -15px; left: 0; width: 60px; height: 3px; background: var(--accent); }
+        .mission-content p { color: #b8b8b8; margin-bottom: 28px; font-size: 1.2rem; line-height: 1.9; }
+        .mission-content .highlight { color: var(--accent); font-style: italic; font-weight: 600; }
+
+        .mission-image {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+            height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .mission-image::before { content: ''; position: absolute; inset: -50%; background: radial-gradient(circle at center, rgba(148, 17, 7, 0.15) 0%, transparent 70%); animation: rotate 20s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .mission-image img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; transition: transform 0.5s ease; }
+        .mission-image:hover img { transform: scale(1.05); }
+
+        .values-section {
+            margin: 140px 0;
+            padding: 80px 60px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .values-section::before, .values-section::after { content: ''; position: absolute; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--accent), transparent); }
+        .values-section::before { top: 0; }
+        .values-section::after { bottom: 0; }
+
+        .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 60px; margin-top: 60px; }
+        .value-card { text-align: center; padding: 40px 30px; position: relative; }
+
+        .value-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(148, 17, 7, 0.1);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+
+        .value-icon::before { content: ''; position: absolute; inset: -5px; border-radius: 50%; border: 1px solid var(--accent); opacity: 0; transform: scale(0.8); transition: all 0.4s ease; }
+        .value-card:hover .value-icon { background: rgba(148, 17, 7, 0.2); border-color: var(--accent); transform: translateY(-5px); }
+        .value-card:hover .value-icon::before { opacity: 0.3; transform: scale(1); }
+        .value-icon i { font-size: 2rem; color: var(--accent); }
+        .value-card h4 { font-size: 1.4rem; margin-bottom: 15px; color: var(--text); }
+        .value-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
+
+        .section-header { text-align: center; margin-bottom: 100px; }
+        .section-header h2 { font-size: 3rem; color: var(--text); margin-bottom: 25px; position: relative; display: inline-block; }
+        .section-subheading { font-size: 1.1rem; color: var(--text-muted); max-width: 600px; margin: 0 auto; line-height: 1.8; }
+
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 50px; margin-bottom: 80px; }
+
+        .team-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            backdrop-filter: blur(20px);
+            padding: 60px 40px;
+            border: 1px solid var(--border);
+            text-align: center;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .team-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(148, 17, 7, 0.08) 0%, transparent 70%); opacity: 0; transition: opacity 0.4s ease; }
+        .team-card::after { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent), transparent); transition: left 0.6s ease; }
+        .team-card:hover { border-color: var(--accent); transform: translateY(-8px); box-shadow: 0 20px 60px rgba(148, 17, 7, 0.15); }
+        .team-card:hover::before { opacity: 1; }
+        .team-card:hover::after { left: 100%; }
+
+        .team-avatar {
+            width: 120px;
+            height: 120px;
+            background: rgba(148, 17, 7, 0.1);
+            border: 3px solid var(--border);
+            margin: 0 auto 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            position: relative;
+            transition: all 0.4s ease;
+            overflow: hidden;
+        }
+
+        .team-avatar::before { content: ''; position: absolute; inset: -50%; background: conic-gradient(from 0deg, transparent, var(--accent), transparent); animation: avatarRotate 3s linear infinite; opacity: 0; transition: opacity 0.4s ease; }
+        @keyframes avatarRotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .team-card:hover .team-avatar { border-color: var(--accent); background: rgba(148, 17, 7, 0.2); transform: scale(1.05); }
+        .team-card:hover .team-avatar::before { opacity: 0.2; }
+        .team-avatar svg { position: relative; z-index: 1; filter: drop-shadow(0 0 10px rgba(148, 17, 7, 0.3)); }
+
+        .team-card h3 { color: var(--text); font-size: 1.75rem; margin-bottom: 12px; position: relative; z-index: 1; }
+        .team-card .role { color: var(--accent); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 25px; font-weight: 600; position: relative; z-index: 1; }
+        .team-card .description { color: var(--text-muted); font-size: 1rem; line-height: 1.7; font-style: italic; position: relative; z-index: 1; }
+        .team-card .credentials { margin-top: 25px; padding-top: 25px; border-top: 1px solid rgba(26, 26, 26, 1); position: relative; z-index: 1; }
+        .credential-item { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
+        .credential-item i { color: var(--accent); font-size: 0.75rem; }
+
+        .timeline-section { margin: 140px 0; position: relative; }
+        .timeline { position: relative; padding: 60px 0; }
+        .timeline::before { content: ''; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(180deg, transparent, var(--border), transparent); transform: translateX(-50%); }
+
+        .timeline-item { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 80px; position: relative; }
+        .timeline-item:nth-child(even) .timeline-content { order: 2; }
+        .timeline-item:nth-child(even) .timeline-year { order: 1; text-align: left; }
+
+        .timeline-year { text-align: right; padding: 30px; }
+        .timeline-year h3 { font-size: 3.5rem; color: var(--accent); opacity: 0.3; font-weight: 300; line-height: 1; }
+
+        .timeline-content {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            padding: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .timeline-content h4 { font-size: 1.5rem; color: var(--text); margin-bottom: 15px; }
+        .timeline-content p { color: var(--text-muted); line-height: 1.8; }
+
+        .timeline-dot {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            background: var(--accent);
+            border: 4px solid var(--bg);
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 0 4px var(--border);
+        }
+
+        .achievements-section { margin: 140px 0; }
+        .achievements-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; }
+
+        .achievement-card {
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            padding: 50px;
+            border: 1px solid var(--border);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 0; background: var(--accent); transition: height 0.4s ease; }
+        .achievement-card:hover { border-color: var(--accent); transform: translateX(5px); }
+        .achievement-card:hover::before { height: 100%; }
+
+        .achievement-icon { font-size: 2.5rem; color: var(--accent); margin-bottom: 25px; }
+        .achievement-card h4 { font-size: 1.6rem; color: var(--text); margin-bottom: 15px; }
+        .achievement-card p { color: var(--text-muted); line-height: 1.8; }
+
+        .quote-section {
+            margin: 140px 0;
+            text-align: center;
+            padding: 100px 60px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.95) 0%, rgba(20, 20, 20, 0.9) 100%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            position: relative;
+        }
+
+        .quote-section::before, .quote-section::after { content: '"'; position: absolute; font-size: 200px; font-family: var(--font-serif); color: var(--accent); opacity: 0.05; line-height: 1; }
+        .quote-section::before { top: 40px; left: 60px; }
+        .quote-section::after { bottom: 40px; right: 60px; transform: rotate(180deg); }
+
+        .quote-text { font-size: 2rem; font-style: italic; color: #b8b8b8; line-height: 1.6; max-width: 900px; margin: 0 auto 30px; position: relative; z-index: 1; }
+        .quote-author { font-size: 1rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.15em; }
+
+        footer {
+            background: var(--surface);
+            padding: 80px 0;
+            border-top: 1px solid rgba(26, 26, 26, 1);
+        }
+
+        .footer-content { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer-brand h3 { font-size: 1.5rem; margin-bottom: 20px; color: var(--text); }
+        .footer-brand p { color: var(--text-muted); line-height: 1.8; margin-bottom: 25px; }
+
+        .social-links { display: flex; gap: 15px; }
+        .social-links a { width: 40px; height: 40px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-muted); }
+        .social-links a:hover { border-color: var(--accent); color: var(--accent); background: rgba(148, 17, 7, 0.1); transform: translateY(-3px); }
+
+        .footer-section h4 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--text); margin-bottom: 25px; }
+        .footer-links { display: flex; flex-direction: column; gap: 12px; }
+        .footer-links a { color: var(--text-muted); font-size: 0.9rem; transition: all 0.2s ease; display: inline-block; }
+        .footer-links a:hover { color: var(--accent); padding-left: 5px; }
+
+        .footer-bottom { padding-top: 40px; border-top: 1px solid rgba(26, 26, 26, 1); text-align: center; color: var(--text-muted); font-size: 0.9rem; }
+
+        .scroll-progress { position: fixed; top: 0; left: 0; width: 0; height: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-bright)); z-index: 10000; transition: width 0.1s ease; }
+
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: rgba(148, 17, 7, 0.9);
+            border: 1px solid var(--accent);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+
+        .scroll-to-top.visible { opacity: 1; visibility: visible; }
+        .scroll-to-top:hover { background: var(--accent); transform: translateY(-5px); box-shadow: 0 10px 30px rgba(148, 17, 7, 0.3); }
+
+        .mobile-menu-toggle { display: none; flex-direction: column; gap: 6px; cursor: pointer; padding: 10px; }
+        .mobile-menu-toggle span { width: 25px; height: 2px; background: var(--text-muted); transition: all 0.3s ease; }
+        .mobile-menu-toggle:hover span { background: var(--accent); }
+
+        @media (max-width: 1200px) {
+            .container { max-width: 1000px; }
+            .hero-text h1 { font-size: 3.5rem; }
+            .mission-grid { gap: 60px; }
+            .stats-bar { gap: 20px; padding: 40px; }
+            .stat-number { font-size: 2.5rem; }
+        }
+
+        @media (max-width: 1024px) {
+            .nav-links { gap: 20px; }
+            .nav-links a { font-size: 0.85rem; }
+            .mission-grid { grid-template-columns: 1fr; gap: 50px; }
+            .values-grid { grid-template-columns: repeat(2, 1fr); }
+            .timeline::before { left: 30px; }
+            .timeline-item { grid-template-columns: 1fr; gap: 0; }
+            .timeline-item:nth-child(even) .timeline-content, .timeline-item:nth-child(even) .timeline-year { order: initial; }
+            .timeline-year { text-align: left; padding: 20px 0 10px 80px; }
+            .timeline-year h3 { font-size: 2.5rem; }
+            .timeline-content { margin-left: 80px; }
+            .timeline-dot { left: 30px; }
+            .footer-content { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero-text p { font-size: 1.1rem; }
+            .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 30px; padding: 30px; }
+            .stat-item:nth-child(2n)::after { display: none; }
+            .mission-content h2, .section-header h2 { font-size: 2rem; }
+            .mission-content p { font-size: 1.1rem; }
+            .team-grid, .values-grid, .achievements-grid { grid-template-columns: 1fr; }
+            .quote-section { padding: 60px 30px; }
+            .quote-text { font-size: 1.5rem; }
+            .quote-section::before, .quote-section::after { font-size: 120px; }
+            .footer-content { grid-template-columns: 1fr; }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background: rgba(10, 10, 10, 0.98);
+                backdrop-filter: blur(30px);
+                flex-direction: column;
+                justify-content: flex-start;
+                padding: 40px 20px;
+                transition: left 0.3s ease;
+                border-right: 1px solid var(--border);
+            }
+
+            .nav-links.active { left: 0; }
+            .nav-links a { font-size: 1.2rem; padding: 15px 0; width: 100%; text-align: center; }
+            .mobile-menu-toggle { display: flex; }
+            .mobile-menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(8px, 8px); }
+            .mobile-menu-toggle.active span:nth-child(2) { opacity: 0; }
+            .mobile-menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(8px, -8px); }
+        }
+
+        @media (max-width: 480px) {
+            .hero-text h1 { font-size: 2rem; }
+            .stats-bar { grid-template-columns: 1fr; }
+            .stat-item::after { display: none !important; }
+            .mission-image { height: 300px; }
+            .values-section { padding: 50px 30px; }
+            .achievement-card { padding: 30px; }
+            .scroll-to-top { width: 45px; height: 45px; bottom: 20px; right: 20px; }
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.8s ease; }
+        .parallax { transition: transform 0.1s ease-out; }
+    </style>
+</head>
+
+<body>
+
+    <div class="scroll-progress"></div>
+
+    <div class="animated-bg">
+        <div class="chess-piece">
+            <svg viewBox="0 0 45 45" width="200" height="200" style="opacity: 0.02;">
+                <g fill="none" stroke="#941107" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M 22.5,11.63 L 22.5,6" stroke-linejoin="miter" />
+                    <path d="M 20,8 L 25,8" stroke-linejoin="miter" />
+                    <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" stroke-linecap="butt" stroke-linejoin="miter" />
+                    <path d="M 12.5,37 C 18,40.5 27,40.5 32.5,37 L 32.5,30 C 32.5,30 41.5,25.5 38.5,19.5 C 34.5,13 25,16 22.5,23.5 L 22.5,27 L 22.5,23.5 C 20,16 10.5,13 6.5,19.5 C 3.5,25.5 12.5,30 12.5,30 L 12.5,37" />
+                </g>
+            </svg>
+        </div>
+        <div class="chess-piece">
+            <svg viewBox="0 0 45 45" width="180" height="180" style="opacity: 0.02;">
+                <g fill="none" stroke="#941107" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="6" cy="12" r="2.75" />
+                    <circle cx="14" cy="9" r="2.75" />
+                    <circle cx="22.5" cy="8" r="2.75" />
+                    <circle cx="31" cy="9" r="2.75" />
+                    <circle cx="39" cy="12" r="2.75" />
+                </g>
+            </svg>
+        </div>
+        <div class="chess-piece">
+            <svg viewBox="0 0 45 45" width="150" height="150" style="opacity: 0.02;">
+                <g fill="none" stroke="#941107" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M 9,36 C 12.39,35.03 19.11,36.43 22.5,34 C 25.89,36.43 32.61,35.03 36,36 C 36,36 37.65,36.54 39,38 C 38.32,38.97 37.35,38.99 36,38.5 C 32.61,37.53 25.89,38.96 22.5,37.5 C 19.11,38.96 12.39,37.53 9,38.5 C 7.65,38.99 6.68,38.97 6,38 C 7.35,36.54 9,36 9,36 z" />
+                </g>
+            </svg>
+        </div>
+        <div class="chess-piece">
+            <svg viewBox="0 0 45 45" width="220" height="220" style="opacity: 0.02;">
+                <g fill="none" stroke="#941107" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M 22.5,11.63 L 22.5,6" stroke-linejoin="miter" />
+                    <path d="M 22.5,25 C 22.5,25 27,17.5 25.5,14.5 C 25.5,14.5 24.5,12 22.5,12 C 20.5,12 19.5,14.5 19.5,14.5 C 18,17.5 22.5,25 22.5,25" stroke-linecap="butt" stroke-linejoin="miter" />
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    RED ROOK<span>, LLC.</span>
+                </a>
+                <div class="mobile-menu-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-section">
+            <div class="container">
+                <div class="hero-text fade-in">
+                    <span class="brand-mark">Red Rook, LLC.</span>
+                    <div class="ornamental-line"></div>
+                    <h1>The Minds Behind <span class="heading-accent">The Machine</span></h1>
+                    <p>We are a team of experts, creators, and strategic thinkers dedicated to building the most
+                        <em>precise</em> trend assessment AI to ever exist. Where precision meets prediction, and data transforms into decisive action.</p>
+                </div>
+
+                <div class="values-section">
+                    <div class="section-header">
+                        <div class="ornamental-line"></div>
+                        <h2>Our Core Values</h2>
+                        <p class="section-subheading">The principles that guide every decision, every algorithm, every innovation</p>
+                    </div>
+                    <div class="values-grid">
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-crosshairs"></i>
+                            </div>
+                            <h4>Precision</h4>
+                            <p>We believe in accuracy down to the decimal. Every prediction, every analysis is refined through rigorous testing and validation.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <h4>Integrity</h4>
+                            <p>Transparency and ethical practice are non-negotiable. Our clients trust us with their capital, and we honor that trust absolutely.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-rocket"></i>
+                            </div>
+                            <h4>Innovation</h4>
+                            <p>The market never sleeps, and neither does our pursuit of cutting-edge technology. We evolve faster than the trends we predict.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <h4>Intelligence</h4>
+                            <p>Our AI doesn't just learn—it adapts, evolves, and outthinks. Machine learning meets market mastery.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <h4>Speed</h4>
+                            <p>In financial markets, milliseconds matter. Our infrastructure processes and executes at lightning speed.</p>
+                        </div>
+                        <div class="value-card">
+                            <div class="value-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4>Collaboration</h4>
+                            <p>Great minds think together. Our team synergy creates solutions greater than the sum of individual brilliance.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quote-section">
+                    <p class="quote-text">"In the game of markets, those who see the future don't just survive—they dominate. We built Hypix to be three moves ahead, always."</p>
+                    <p class="quote-author">— The Red Rook Team</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>RED ROOK, LLC.</h3>
+                    <p>Pioneering the convergence of artificial intelligence and financial markets. Where machine learning meets market mastery.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
+                        <a href="#" aria-label="Medium"><i class="fab fa-medium-m"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Platform</h4>
+                    <div class="footer-links">
+                        <a href="features.html">Features</a>
+                        <a href="preview.html">Live Demo</a>
+                        <a href="pricing.html">Pricing</a>
+                        <a href="model.html">Access Bot</a>
+                        <a href="visualizer.html">Visualizer</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Company</h4>
+                    <div class="footer-links">
+                        <a href="about_us.html">About Us</a>
+                        <a href="#careers">Careers</a>
+                        <a href="#press">Press Kit</a>
+                        <a href="#partners">Partners</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4>Resources</h4>
+                    <div class="footer-links">
+                        <a href="#documentation">Documentation</a>
+                        <a href="#api">API Reference</a>
+                        <a href="#support">Support Center</a>
+                        <a href="#blog">Blog</a>
+                        <a href="#whitepaper">Whitepaper</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Red Rook, LLC. All rights reserved. | <a href="#privacy">Privacy Policy</a> | <a href="#terms">Terms of Service</a> | <a href="#security">Security</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="scroll-to-top">
+        <i class="fas fa-chevron-up"></i>
+    </div>
+
+    <script>
+        const header = document.querySelector('header');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            if (currentScroll > 100) { header.classList.add('scrolled'); } else { header.classList.remove('scrolled'); }
+            lastScroll = currentScroll;
+        });
+
+        const scrollProgress = document.querySelector('.scroll-progress');
+        window.addEventListener('scroll', () => {
+            const scrollTotal = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            scrollProgress.style.width = (window.pageYOffset / scrollTotal) * 100 + '%';
+        });
+
+        const scrollToTopBtn = document.querySelector('.scroll-to-top');
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 500) { scrollToTopBtn.classList.add('visible'); } else { scrollToTopBtn.classList.remove('visible'); }
+        });
+        scrollToTopBtn.addEventListener('click', () => { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        mobileMenuToggle.addEventListener('click', () => { mobileMenuToggle.classList.toggle('active'); navLinks.classList.toggle('active'); });
+        document.querySelectorAll('.nav-links a').forEach(link => { link.addEventListener('click', () => { mobileMenuToggle.classList.remove('active'); navLinks.classList.remove('active'); }); });
+
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            document.querySelectorAll('.parallax').forEach(el => { el.style.transform = `translateY(${scrolled * 0.5}px)`; });
+        });
+
+        const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -100px 0px' };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateY(0)'; }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.team-card, .value-card, .achievement-card, .timeline-item').forEach(el => {
+            el.style.opacity = '0'; el.style.transform = 'translateY(30px)'; el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+
+        const animateCounter = (element, target, duration = 2000) => {
+            let current = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) { current = target; clearInterval(timer); }
+                if (element.textContent.includes('$')) { element.textContent = '$' + current.toFixed(1) + (element.textContent.includes('B') ? 'B+' : 'M+'); }
+                else if (element.textContent.includes('%')) { element.textContent = current.toFixed(1) + '%'; }
+                else if (element.textContent.includes('/')) { element.textContent = '24/7'; }
+                else { element.textContent = Math.floor(current) + 'M+'; }
+            }, 16);
+        };
+
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !entry.target.classList.contains('animated')) {
+                    entry.target.classList.add('animated');
+                    entry.target.querySelectorAll('.stat-number').forEach((stat, index) => {
+                        const text = stat.textContent;
+                        let target;
+                        if (text.includes('%')) { target = parseFloat(text); }
+                        else if (text.includes('$') && text.includes('B')) { target = parseFloat(text.replace(/[$B+]/g, '')); }
+                        else if (text.includes('M')) { target = parseFloat(text.replace(/[M+]/g, '')); }
+                        else if (text.includes('/')) { return; }
+                        setTimeout(() => { animateCounter(stat, target, 2000); }, index * 200);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const statsBar = document.querySelector('.stats-bar');
+        if (statsBar) { statsObserver.observe(statsBar); }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) { e.preventDefault(); document.querySelector(this.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' }); });
+        });
+
+        document.querySelectorAll('.team-card').forEach(card => {
+            card.addEventListener('mouseenter', function() { this.style.zIndex = '10'; });
+            card.addEventListener('mouseleave', function() { this.style.zIndex = '1'; });
+        });
+
+        const timelineObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.style.opacity = '1'; entry.target.style.transform = 'translateX(0)'; } });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.timeline-item').forEach((item, index) => {
+            item.style.opacity = '0'; item.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            item.style.transform = (index % 2 === 0) ? 'translateX(-50px)' : 'translateX(50px)';
+            timelineObserver.observe(item);
+        });
+
+        navLinks.addEventListener('click', (e) => { e.stopPropagation(); });
+        document.addEventListener('click', (e) => { if (!navLinks.contains(e.target) && !mobileMenuToggle.contains(e.target)) { mobileMenuToggle.classList.remove('active'); navLinks.classList.remove('active'); } });
+
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            setTimeout(() => { document.body.style.transition = 'opacity 0.5s ease'; document.body.style.opacity = '1'; }, 100);
+        });
+    </script>
+
+</body>
+
+</html>

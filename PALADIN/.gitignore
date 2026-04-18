@@ -1,0 +1,17 @@
+# Virtual environment (named paladin)
+PALADIN/paladin/
+paladin/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# IDE / editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
