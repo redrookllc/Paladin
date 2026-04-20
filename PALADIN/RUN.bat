@@ -1,19 +1,20 @@
 @echo off
 setlocal enabledelayedexpansion
-title Red Rook — AI Trading Platform
+title Paladin — AI Trading Platform
 
 cls
 color 07
-
 echo.
 echo.
-echo          ^+----------------------------------------------------------^+
-echo          ^|                                                          ^|
-echo          ^|              R E D   R O O K                            ^|
-echo          ^|         AI-Powered Trading Intelligence Platform         ^|
-echo          ^|                                                          ^|
-echo          ^+----------------------------------------------------------^+
-echo.
+echo          ============================================================
+echo                         ____        _           _ _       
+echo                        |  _ \ __ _ | | __ _  __| (_)_ __  
+echo                        | |_) / _` || |/ _` |/ _` | | '_ \ 
+echo                        |  __/ (_| || | (_| | (_| | | | | |
+echo                        |_|   \__,_||_|\__,_|\__,_|_|_| |_|
+echo          ------------------------------------------------------------
+echo                  AI-Powered Trading Intelligence Platform
+echo          ============================================================
 echo.
 
 cd /d "%~dp0"
@@ -43,10 +44,15 @@ if errorlevel 1 (
 )
 
 echo          [ 3 / 5 ]  Loading trading brain...
-python -m pip install -q --upgrade pip setuptools wheel
+python -m pip install --upgrade pip setuptools wheel
 
 echo          [ 4 / 5 ]  Connecting to data feeds...
-pip install -q plotly pyinstaller gpt4all tensorflow pandas numpy yfinance scikit-learn 2>nul
+if exist requirements.txt (
+    echo          [ 4 / 5 ]  Installing dependencies from requirements.txt...
+    pip install -r requirements.txt
+) else (
+    echo          [WARNING] requirements.txt not found. Skipping dependency install.
+)
 
 echo          [ 5 / 5 ]  Preparing charts...
 echo.
@@ -56,6 +62,7 @@ echo          ----------------------------------------------------------
 echo.
 echo.
 
+REM --- Launch desktop app ---
 python main.py
 
 if errorlevel 1 (
